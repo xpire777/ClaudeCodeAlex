@@ -42,11 +42,11 @@ export default function About() {
   return (
     <section
       ref={sectionRef}
-      className="flex flex-col items-center px-6 py-24"
+      className="flex flex-col items-center bg-dark px-6 py-24"
     >
       <div className="max-w-3xl text-center">
         <h2
-          className={`mb-4 text-2xl font-bold tracking-[0.12em] text-dark transition-all duration-700 sm:text-3xl ${
+          className={`mb-4 text-2xl font-bold tracking-[0.12em] text-cream transition-all duration-700 sm:text-3xl ${
             visible
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-6"
