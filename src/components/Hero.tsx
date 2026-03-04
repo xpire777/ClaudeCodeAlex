@@ -112,7 +112,7 @@ export default function Hero() {
                 <div className="relative h-12 w-12 overflow-hidden rounded-lg">
                   <Image
                     src={item.image!}
-                    alt=""
+                    alt="AI companion persona photo"
                     width={48}
                     height={48}
                     className="h-full w-full object-cover"

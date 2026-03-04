@@ -60,7 +60,7 @@ function ChatHeader({ name, img }: { name: string; img: string }) {
     <div className="flex items-center gap-3 border-b border-taupe/10 px-4 py-3">
       <Image
         src={img}
-        alt={name}
+        alt={`${name} - AI digital companion`}
         width={36}
         height={36}
         className="h-9 w-9 rounded-full object-cover"
@@ -152,7 +152,7 @@ export default function Teaser() {
                   <div className="relative h-20">
                     <Image
                       src={p.img}
-                      alt={p.name}
+                      alt={`${p.name} - AI companion persona`}
                       width={140}
                       height={80}
                       className="h-full w-full object-cover"
@@ -235,7 +235,7 @@ export default function Teaser() {
                     <div className="max-w-[85%] overflow-hidden rounded-2xl rounded-bl-md">
                       <Image
                         src="/logos/kai2.png"
-                        alt="Photo from Chloe"
+                        alt="Photo from AI companion Chloe"
                         width={200}
                         height={150}
                         className="h-32 w-full object-cover"
