@@ -121,7 +121,7 @@ export default function Hero() {
           CABN
         </h1>
 
-        <p className="mb-4 whitespace-nowrap text-lg tracking-[0.2em] text-taupe opacity-0 animate-fade-in-up animate-delay-100 sm:text-xl">
+        <p className="mb-4 whitespace-nowrap text-lg tracking-[0.2em] text-dark opacity-0 animate-fade-in-up animate-delay-100 sm:text-xl">
           Connection, reimagined.
         </p>
 
