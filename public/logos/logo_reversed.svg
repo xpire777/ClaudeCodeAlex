@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="200" viewBox="0 0 600 200">
+  <rect width="600" height="200" fill="#322D29"/>
+  <text x="300" y="115" font-family="Georgia, serif" font-size="88" font-weight="bold" fill="#EFE9E1" text-anchor="middle" letter-spacing="28">CABN</text>
+  <text x="300" y="155" font-family="Georgia, serif" font-size="22" fill="#AC9C8D" text-anchor="middle" font-style="italic" letter-spacing="4">cabn.io</text>
+</svg>
