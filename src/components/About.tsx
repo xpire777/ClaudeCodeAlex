@@ -16,7 +16,7 @@ const values = [
   {
     title: "Carefully Curated",
     description:
-      "A handpicked roster of creator-designed personas, each with a unique voice.",
+      "Your matched persona will send you photos when they're on their coffee run, or when they just got out of the gym.",
   },
 ];
 
