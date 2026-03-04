@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="flex flex-col items-center gap-8 px-6 py-16">
+    <footer className="flex flex-col items-center gap-8 border-t border-taupe/20 px-6 py-16">
       <Image
         src="/logos/logo_wordmark.svg"
         alt="CABN"
