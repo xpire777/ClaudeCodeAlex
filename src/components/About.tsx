@@ -14,9 +14,9 @@ const values = [
       "Every conversation feels real. Crafted personalities that remember and adapt.",
   },
   {
-    title: "Carefully Curated",
+    title: "Lives Like You Do",
     description:
-      "Your matched persona will send you photos when they're on their coffee run, or when they just got out of the gym.",
+      "Photos from their coffee run, a text after the gym. Your persona shares their day the way a real person would.",
   },
 ];
 
