@@ -7,34 +7,46 @@ const floatingItems = [
   {
     type: "chat",
     text: "just got back from the gym 💪",
-    className: "left-[5%] top-[18%] animate-float-slow opacity-0 animate-fade-in-up animate-delay-200",
+    position: "left-[5%] top-[18%]",
+    fadeDelay: "animate-delay-200",
+    float: "animate-float-slow",
   },
   {
     type: "photo",
     persona: "Kai",
     image: "/logos/kai.png",
-    className: "right-[6%] top-[14%] animate-float opacity-0 animate-fade-in-up animate-delay-300",
+    position: "right-[6%] top-[14%]",
+    fadeDelay: "animate-delay-300",
+    float: "animate-float",
   },
   {
     type: "chat",
     text: "good morning 🤍",
-    className: "left-[8%] top-[45%] animate-float opacity-0 animate-fade-in-up animate-delay-100",
+    position: "left-[8%] top-[45%]",
+    fadeDelay: "animate-delay-100",
+    float: "animate-float",
   },
   {
     type: "chat",
     text: "you free tonight?",
-    className: "right-[8%] top-[42%] animate-float-slower opacity-0 animate-fade-in-up animate-delay-400",
+    position: "right-[8%] top-[42%]",
+    fadeDelay: "animate-delay-400",
+    float: "animate-float-slower",
   },
   {
     type: "photo",
     persona: "Sienna",
     image: "/logos/sienna.png",
-    className: "left-[12%] bottom-[22%] animate-float-slower opacity-0 animate-fade-in-up animate-delay-300",
+    position: "left-[12%] bottom-[22%]",
+    fadeDelay: "animate-delay-300",
+    float: "animate-float-slower",
   },
   {
     type: "chat",
     text: "thinking about you ✨",
-    className: "right-[5%] bottom-[25%] animate-float-slow opacity-0 animate-fade-in-up animate-delay-200",
+    position: "right-[5%] bottom-[25%]",
+    fadeDelay: "animate-delay-200",
+    float: "animate-float-slow",
   },
 ];
 
@@ -86,8 +98,9 @@ export default function Hero() {
         {floatingItems.map((item, i) => (
           <div
             key={i}
-            className={`absolute ${item.className}`}
+            className={`absolute ${item.position} opacity-0 animate-fade-in-up ${item.fadeDelay}`}
           >
+            <div className={item.float}>
             {item.type === "chat" ? (
               <div className="rounded-2xl rounded-bl-md bg-white/70 px-4 py-2.5 shadow-sm backdrop-blur-sm">
                 <p className="whitespace-nowrap text-xs text-dark/70">
@@ -111,6 +124,7 @@ export default function Hero() {
                 </div>
               </div>
             )}
+            </div>
           </div>
         ))}
       </div>
