@@ -19,10 +19,10 @@ const photoMessages = [
 ];
 
 const personas = [
-  { name: "Valentina", label: "The Glamorous Model", sub: "Aspirational, flirty", img: "/logos/sienna.png" },
+  { name: "Valentina", label: "The Glamorous Model", sub: "Aspirational, flirty", img: "/logos/valentina.png" },
   { name: "Kai", label: "The Adventurer", sub: "Spontaneous, warm", img: "/logos/kai.png" },
-  { name: "Nadia", label: "The Spicy One", sub: "Bold, teasing", img: "/logos/sienna.png" },
-  { name: "Maren", label: "The Creative", sub: "Dreamy, artistic", img: "/logos/kai.png" },
+  { name: "Nadia", label: "The Spicy One", sub: "Bold, teasing", img: "/logos/nadia.png" },
+  { name: "Maren", label: "The Creative", sub: "Dreamy, artistic", img: "/logos/maren.png" },
 ];
 
 function PhoneFrame({
