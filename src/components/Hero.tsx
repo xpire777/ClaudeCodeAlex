@@ -117,18 +117,13 @@ export default function Hero() {
 
       {/* Main content */}
       <div className="relative z-10 flex max-w-xl flex-col items-center text-center">
-        <Image
-          src="/logos/logo_wordmark.svg"
-          alt="CABN"
-          width={280}
-          height={68}
-          priority
-          className="mb-12 opacity-0 animate-fade-in-up"
-        />
-
-        <h1 className="mb-4 whitespace-nowrap text-3xl font-bold tracking-[0.15em] text-dark opacity-0 animate-fade-in-up animate-delay-100 sm:text-4xl">
-          Connection, reimagined.
+        <h1 className="mb-6 text-8xl font-bold tracking-[0.35em] text-dark opacity-0 animate-fade-in-up sm:text-9xl">
+          CABN
         </h1>
+
+        <p className="mb-4 whitespace-nowrap text-lg tracking-[0.2em] text-taupe opacity-0 animate-fade-in-up animate-delay-100 sm:text-xl">
+          Connection, reimagined.
+        </p>
 
         <p className="mb-10 max-w-md text-lg leading-relaxed text-taupe opacity-0 animate-fade-in-up animate-delay-200">
           A new kind of connection is coming. Curated, personal, always there
