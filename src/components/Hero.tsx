@@ -117,7 +117,7 @@ export default function Hero() {
 
       {/* Main content */}
       <div className="relative z-10 flex max-w-xl flex-col items-center text-center">
-        <h1 className="mb-6 text-8xl font-bold tracking-[0.35em] text-dark opacity-0 animate-fade-in-up sm:text-9xl">
+        <h1 className="mb-6 text-6xl font-bold tracking-[0.3em] text-dark opacity-0 animate-fade-in-up sm:text-7xl">
           CABN
         </h1>
 
