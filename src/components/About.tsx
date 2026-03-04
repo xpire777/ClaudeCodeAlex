@@ -6,7 +6,7 @@ const values = [
   {
     title: "Always Available",
     description:
-      "No scheduling, no waiting. Your persona is there whenever you are.",
+      "No scheduling, no waiting. Your persona is there whenever you are, day or night, ready to pick up right where you left off.",
   },
   {
     title: "Deeply Personal",
