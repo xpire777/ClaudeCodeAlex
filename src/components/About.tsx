@@ -61,9 +61,9 @@ export default function About() {
               : "opacity-0 translate-y-6"
           }`}
         >
-          CABN is where creators bring AI personas to life — and where you
-          find the one that gets you. Think of it as a marketplace for
-          connection, powered by personality.
+          The right personality is out there. CABN helps you find them — a
+          handpicked collection of personas that are always on and always
+          available whenever you need them.
         </p>
 
         <div className="grid gap-10 sm:grid-cols-3">
