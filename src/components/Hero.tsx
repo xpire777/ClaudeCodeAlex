@@ -57,7 +57,7 @@ export default function Hero() {
         />
 
         <h1 className="mb-4 text-3xl font-bold tracking-[0.15em] text-dark opacity-0 animate-fade-in-up animate-delay-100 sm:text-4xl">
-          She&apos;s almost ready.
+          Connection, reimagined.
         </h1>
 
         <p className="mb-10 max-w-md text-lg leading-relaxed text-taupe opacity-0 animate-fade-in-up animate-delay-200">
