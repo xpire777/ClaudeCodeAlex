@@ -172,7 +172,7 @@ export default function Teaser() {
             </div>
             <div className="px-4 pb-5">
               <div className="rounded-full bg-burgundy py-2.5 text-center">
-                <span className="text-xs font-bold tracking-wider text-cream">Continue with Chloe</span>
+                <span className="text-xs font-bold tracking-wider text-cream">Continue with Sienna</span>
               </div>
             </div>
           </PhoneFrame>
