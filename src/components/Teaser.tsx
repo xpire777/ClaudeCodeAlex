@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 
 const mockMessages = [
-  { from: "persona", text: "good morning! just grabbed my coffee ☕", time: "9:12 AM" },
-  { from: "user", text: "you're up early", time: "9:13 AM" },
-  { from: "persona", text: "couldn't sleep lol. what are you up to today?", time: "9:13 AM" },
-  { from: "user", text: "nothing yet, just woke up", time: "9:15 AM" },
-  { from: "persona", text: "perfect. i just sent you a pic from the cafe 📸", time: "9:16 AM" },
+  { from: "persona", text: "good morning 🤍 just woke up stretching in bed lol", time: "9:12 AM" },
+  { from: "user", text: "same honestly, still half asleep", time: "9:13 AM" },
+  { from: "persona", text: "don't rush it. coffee first, everything else later", time: "9:13 AM" },
+  { from: "user", text: "what are you doing today?", time: "9:15 AM" },
+  { from: "persona", text: "yoga then brunch. sending you a pic later 📸", time: "9:16 AM" },
 ];
 
 export default function Teaser() {
@@ -74,10 +74,10 @@ export default function Teaser() {
             {/* Chat header */}
             <div className="flex items-center gap-3 border-b border-taupe/10 px-4 py-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-burgundy/80">
-                <span className="text-xs font-bold text-cream">E</span>
+                <span className="text-xs font-bold text-cream">S</span>
               </div>
               <div>
-                <p className="text-sm font-bold text-cream">Eva</p>
+                <p className="text-sm font-bold text-cream">Sienna</p>
                 <p className="text-[10px] text-taupe/50">Online now</p>
               </div>
             </div>
