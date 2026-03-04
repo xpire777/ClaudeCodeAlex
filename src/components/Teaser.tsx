@@ -234,7 +234,7 @@ export default function Teaser() {
                   {"type" in msg && msg.type === "photo" ? (
                     <div className="max-w-[85%] overflow-hidden rounded-2xl rounded-bl-md">
                       <Image
-                        src="/logos/kai.png"
+                        src="/logos/kai2.png"
                         alt="Photo from Chloe"
                         width={200}
                         height={150}
