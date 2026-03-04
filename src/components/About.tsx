@@ -11,7 +11,7 @@ const values = [
   {
     title: "Deeply Personal",
     description:
-      "Every conversation feels real. Crafted personalities that remember and adapt.",
+      "Every conversation feels real. Crafted personalities that remember, adapt, and grow with you over time.",
   },
   {
     title: "Lives Like You Do",
