@@ -62,7 +62,7 @@ export default function Hero() {
 
         <p className="mb-10 max-w-md text-lg leading-relaxed text-taupe opacity-0 animate-fade-in-up animate-delay-200">
           A new kind of connection is coming. Curated, personal, always there
-          when you need her.
+          when you need them.
         </p>
 
         <form
