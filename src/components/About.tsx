@@ -44,7 +44,7 @@ export default function About() {
       ref={sectionRef}
       className="flex flex-col items-center px-6 py-24"
     >
-      <div className="max-w-2xl text-center">
+      <div className="max-w-3xl text-center">
         <h2
           className={`mb-4 text-2xl font-bold tracking-[0.12em] text-dark transition-all duration-700 sm:text-3xl ${
             visible
@@ -66,21 +66,21 @@ export default function About() {
           available whenever you need them.
         </p>
 
-        <div className="grid gap-10 sm:grid-cols-3">
+        <div className="grid gap-x-12 gap-y-10 sm:grid-cols-3">
           {values.map((v, i) => (
             <div
               key={v.title}
-              className={`transition-all duration-700 ${
+              className={`flex flex-col items-center transition-all duration-700 ${
                 visible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-6"
               }`}
               style={{ transitionDelay: `${200 + i * 100}ms` }}
             >
-              <h3 className="mb-2 text-sm font-bold uppercase tracking-[0.2em] text-burgundy">
+              <h3 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-burgundy">
                 {v.title}
               </h3>
-              <p className="text-sm leading-relaxed text-taupe">
+              <p className="max-w-[220px] text-sm leading-relaxed text-taupe">
                 {v.description}
               </p>
             </div>
