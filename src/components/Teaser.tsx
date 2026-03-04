@@ -128,14 +128,14 @@ export default function Teaser() {
         This is what your mornings could look like.
       </p>
 
-      <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-start lg:gap-10">
+      <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-center lg:gap-10">
         {/* Phone 1: Persona Picker */}
         <div
           className={`transition-all duration-1000 delay-200 ${
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <PhoneFrame className="lg:mt-12">
+          <PhoneFrame>
             <StatusBar time="9:41" />
             <div className="px-4 pb-2 pt-2">
               <p className="text-[10px] text-taupe/40 text-right">Step 1 of 3</p>
@@ -220,7 +220,7 @@ export default function Teaser() {
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <PhoneFrame className="lg:mt-12">
+          <PhoneFrame>
             <StatusBar time="3:01 PM" />
             <ChatHeader name="Chloe" img="/logos/kai.png" />
             <div className="flex flex-col gap-2.5 px-4 py-4">
