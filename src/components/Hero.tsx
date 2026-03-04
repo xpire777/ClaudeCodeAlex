@@ -3,6 +3,37 @@
 import { useState } from "react";
 import Image from "next/image";
 
+const floatingItems = [
+  {
+    type: "chat",
+    text: "just got back from the gym 💪",
+    className: "left-[5%] top-[18%] animate-float-slow opacity-0 animate-fade-in-up animate-delay-200",
+  },
+  {
+    type: "photo",
+    className: "right-[6%] top-[14%] animate-float opacity-0 animate-fade-in-up animate-delay-300",
+  },
+  {
+    type: "chat",
+    text: "good morning 🤍",
+    className: "left-[8%] top-[45%] animate-float opacity-0 animate-fade-in-up animate-delay-100",
+  },
+  {
+    type: "chat",
+    text: "you free tonight?",
+    className: "right-[8%] top-[42%] animate-float-slower opacity-0 animate-fade-in-up animate-delay-400",
+  },
+  {
+    type: "photo",
+    className: "left-[12%] bottom-[22%] animate-float-slower opacity-0 animate-fade-in-up animate-delay-300",
+  },
+  {
+    type: "chat",
+    text: "thinking about you ✨",
+    className: "right-[5%] bottom-[25%] animate-float-slow opacity-0 animate-fade-in-up animate-delay-200",
+  },
+];
+
 export default function Hero() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<
@@ -45,8 +76,43 @@ export default function Hero() {
   }
 
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center px-6 py-24">
-      <div className="flex max-w-xl flex-col items-center text-center">
+    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-24">
+      {/* Floating chat bubbles and photo messages */}
+      <div className="pointer-events-none absolute inset-0 hidden lg:block">
+        {floatingItems.map((item, i) => (
+          <div
+            key={i}
+            className={`absolute ${item.className}`}
+          >
+            {item.type === "chat" ? (
+              <div className="rounded-2xl rounded-bl-md bg-white/70 px-4 py-2.5 shadow-sm backdrop-blur-sm">
+                <p className="whitespace-nowrap text-xs text-dark/70">
+                  {item.text}
+                </p>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 rounded-2xl rounded-bl-md bg-white/70 px-3 py-2 shadow-sm backdrop-blur-sm">
+                <div className="relative h-12 w-12 overflow-hidden rounded-lg">
+                  <Image
+                    src="/logos/sienna.png"
+                    alt=""
+                    width={48}
+                    height={48}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-dark/50">Sienna sent a photo</p>
+                  <p className="text-[9px] text-taupe">just now</p>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Main content */}
+      <div className="relative z-10 flex max-w-xl flex-col items-center text-center">
         <Image
           src="/logos/logo_wordmark.svg"
           alt="CABN"
