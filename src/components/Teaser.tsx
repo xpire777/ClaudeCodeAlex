@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 const mockMessages = [
   { from: "persona", text: "good morning 🤍 just woke up stretching in bed lol", time: "9:12 AM" },
@@ -73,9 +74,13 @@ export default function Teaser() {
 
             {/* Chat header */}
             <div className="flex items-center gap-3 border-b border-taupe/10 px-4 py-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-burgundy/80">
-                <span className="text-xs font-bold text-cream">S</span>
-              </div>
+              <Image
+                src="/logos/sienna.png"
+                alt="Sienna"
+                width={36}
+                height={36}
+                className="h-9 w-9 rounded-full object-cover"
+              />
               <div>
                 <p className="text-sm font-bold text-cream">Sienna</p>
                 <p className="text-[10px] text-taupe/50">Online now</p>
