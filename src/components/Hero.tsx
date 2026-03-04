@@ -11,6 +11,8 @@ const floatingItems = [
   },
   {
     type: "photo",
+    persona: "Kai",
+    image: "/logos/kai.png",
     className: "right-[6%] top-[14%] animate-float opacity-0 animate-fade-in-up animate-delay-300",
   },
   {
@@ -25,6 +27,8 @@ const floatingItems = [
   },
   {
     type: "photo",
+    persona: "Sienna",
+    image: "/logos/sienna.png",
     className: "left-[12%] bottom-[22%] animate-float-slower opacity-0 animate-fade-in-up animate-delay-300",
   },
   {
@@ -94,7 +98,7 @@ export default function Hero() {
               <div className="flex items-center gap-2 rounded-2xl rounded-bl-md bg-white/70 px-3 py-2 shadow-sm backdrop-blur-sm">
                 <div className="relative h-12 w-12 overflow-hidden rounded-lg">
                   <Image
-                    src="/logos/sienna.png"
+                    src={item.image!}
                     alt=""
                     width={48}
                     height={48}
@@ -102,7 +106,7 @@ export default function Hero() {
                   />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-dark/50">Sienna sent a photo</p>
+                  <p className="text-[10px] font-bold text-dark/50">{item.persona} sent a photo</p>
                   <p className="text-[9px] text-taupe">just now</p>
                 </div>
               </div>
