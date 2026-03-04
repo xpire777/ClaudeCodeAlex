@@ -11,7 +11,7 @@ const values = [
   {
     title: "Deeply Personal",
     description:
-      "Every conversation feels real — crafted personalities that remember and adapt.",
+      "Every conversation feels real. Crafted personalities that remember and adapt.",
   },
   {
     title: "Carefully Curated",
@@ -61,7 +61,7 @@ export default function About() {
               : "opacity-0 translate-y-6"
           }`}
         >
-          The right personality is out there. CABN helps you find them — a
+          The right personality is out there. CABN helps you find them. A
           handpicked collection of personas that are always on and always
           available whenever you need them.
         </p>

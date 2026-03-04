@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CABN — Coming Soon",
+  title: "CABN - Coming Soon",
   description:
     "CABN is an AI-powered creator persona marketplace. Join the waitlist to be the first to know when we launch.",
   openGraph: {
-    title: "CABN — Coming Soon",
+    title: "CABN - Coming Soon",
     description:
       "An AI-powered creator persona marketplace. Join the waitlist.",
     url: "https://cabn.io",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "CABN — Coming Soon",
+    title: "CABN - Coming Soon",
     description:
       "An AI-powered creator persona marketplace. Join the waitlist.",
   },
