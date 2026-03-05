@@ -18,7 +18,7 @@ export default function PersonaAvatar({
         alt={name}
         width={size}
         height={size}
-        className="rounded-full object-cover"
+        className="rounded-full object-cover object-[center_20%]"
         style={{ width: size, height: size }}
       />
       {online && (

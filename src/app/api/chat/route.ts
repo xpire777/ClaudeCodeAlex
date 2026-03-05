@@ -42,9 +42,9 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { message, personaSlug } = await request.json();
+    const { message, personaSlug, followUp } = await request.json();
 
-    if (!message || !personaSlug) {
+    if ((!message && !followUp) || !personaSlug) {
       return Response.json({ error: "Missing message or persona" }, { status: 400 });
     }
 
@@ -74,12 +74,14 @@ export async function POST(request: NextRequest) {
       conversation = newConv;
     }
 
-    // Save user message
-    await supabase.from("messages").insert({
-      conversation_id: conversation.id,
-      role: "user",
-      content: message,
-    });
+    // Save user message (skip for follow-ups)
+    if (message && !followUp) {
+      await supabase.from("messages").insert({
+        conversation_id: conversation.id,
+        role: "user",
+        content: message,
+      });
+    }
 
     // Get conversation history for context
     const { data: history } = await supabase
@@ -89,17 +91,47 @@ export async function POST(request: NextRequest) {
       .order("created_at", { ascending: true })
       .limit(MAX_CONTEXT_MESSAGES);
 
-    const messages = (history || []).map((msg) => ({
+    // Ensure messages alternate roles (Claude API requirement)
+    const rawMessages = (history || []).map((msg) => ({
       role: msg.role as "user" | "assistant",
       content: msg.content,
     }));
 
+    const messages: { role: "user" | "assistant"; content: string }[] = [];
+    for (const msg of rawMessages) {
+      if (messages.length > 0 && messages[messages.length - 1].role === msg.role) {
+        // Merge consecutive same-role messages
+        messages[messages.length - 1].content += " " + msg.content;
+      } else {
+        messages.push({ ...msg });
+      }
+    }
+
+    // For follow-ups, add instruction to send a natural follow-up question
+    const systemPrompt = followUp
+      ? persona.systemPrompt + "\n\nThe user hasn't responded in a while. Send a casual follow-up text like a real person would — ask a question, share a random thought, or bring up something from earlier in the conversation. Keep it natural and short, like you just thought of something."
+      : persona.systemPrompt;
+
+    // For follow-ups, add a nudge as the last user message
+    const apiMessages = followUp
+      ? [...messages, { role: "user" as const, content: "[The user hasn't replied yet]" }]
+      : messages;
+
+    // Ensure conversation starts with a user message
+    if (apiMessages.length === 0) {
+      apiMessages.push({ role: "user", content: message || "hi" });
+    } else if (apiMessages[0].role !== "user") {
+      apiMessages.unshift({ role: "user", content: "hi" });
+    }
+
+    console.log("[chat] Sending to Claude:", apiMessages.length, "messages, followUp:", !!followUp);
+
     // Stream response from Claude
     const stream = anthropic.messages.stream({
       model: "claude-sonnet-4-20250514",
-      max_tokens: 512,
-      system: persona.systemPrompt,
-      messages,
+      max_tokens: 150,
+      system: systemPrompt,
+      messages: apiMessages,
     });
 
     let fullResponse = "";
@@ -124,7 +156,7 @@ export async function POST(request: NextRequest) {
           await supabase.from("messages").insert({
             conversation_id: conversation.id,
             role: "assistant",
-            content: fullResponse,
+            content: fullResponse.replace(/\n+/g, " ").trim(),
           });
 
           // Update last_message_at

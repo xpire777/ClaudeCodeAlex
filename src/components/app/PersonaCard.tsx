@@ -6,22 +6,23 @@ export default function PersonaCard({ persona }: { persona: Persona }) {
   return (
     <Link
       href={`/profile/${persona.slug}`}
-      className="group overflow-hidden rounded-2xl border border-taupe/10 bg-surface-light transition-colors hover:border-taupe/20"
+      className="group flex flex-col items-center gap-3 rounded-2xl border border-taupe/10 bg-surface-light px-4 py-5 transition-colors hover:border-taupe/20"
     >
-      <div className="relative aspect-[3/4]">
+      <div className="relative h-52 w-52 overflow-hidden rounded-full">
         <Image
           src={persona.image}
           alt={persona.name}
           fill
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          className="object-cover object-[center_20%] transition-transform duration-300 group-hover:scale-110"
         />
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 pt-12">
-          <p className="text-lg font-bold text-cream">{persona.name}</p>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-burgundy">
-            {persona.archetype}
-          </p>
-          <p className="mt-1 text-xs text-taupe/70">{persona.tagline}</p>
-        </div>
+      </div>
+      <div className="text-center">
+        <p className="text-lg font-bold text-cream">{persona.name}, {persona.age}</p>
+        <p className="mt-0.5 text-sm text-taupe/50">{persona.city}</p>
+        <p className="mt-0.5 text-xs font-bold uppercase tracking-widest text-burgundy">
+          {persona.archetype}
+        </p>
+        <p className="mt-1 text-sm text-taupe/60">{persona.tagline}</p>
       </div>
     </Link>
   );

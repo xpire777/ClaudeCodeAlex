@@ -27,7 +27,7 @@ export default function LoginPage() {
       return;
     }
 
-    window.location.href = "/discover";
+    window.location.href = "/overview";
   }
 
   return (

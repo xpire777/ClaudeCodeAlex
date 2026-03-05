@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getPersonaBySlug } from "@/data/personas";
@@ -24,6 +24,8 @@ export default function ChatPage() {
   const [streaming, setStreaming] = useState(false);
   const [streamText, setStreamText] = useState("");
   const [loading, setLoading] = useState(true);
+  const followUpTimer = useRef<NodeJS.Timeout | null>(null);
+  const followUpSent = useRef(false);
 
   const loadHistory = useCallback(async () => {
     const supabase = createClient();
@@ -63,7 +65,83 @@ export default function ChatPage() {
     loadHistory();
   }, [loadHistory]);
 
+  function clearFollowUp() {
+    if (followUpTimer.current) {
+      clearTimeout(followUpTimer.current);
+      followUpTimer.current = null;
+    }
+  }
+
+  function scheduleFollowUp() {
+    clearFollowUp();
+    if (followUpSent.current) return; // Only one follow-up per user silence
+    const delay = 120000; // 2 minutes
+    followUpTimer.current = setTimeout(() => {
+      followUpSent.current = true;
+      sendFollowUp();
+    }, delay);
+  }
+
+  async function sendFollowUp() {
+    setStreaming(true);
+    setStreamText("");
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ personaSlug, followUp: true }),
+      });
+
+      if (!res.ok) return;
+
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder();
+      let fullText = "";
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value);
+          for (const line of chunk.split("\n")) {
+            if (line.startsWith("data: ")) {
+              const data = line.slice(6);
+              if (data === "[DONE]") continue;
+              try {
+                const parsed = JSON.parse(data);
+                if (parsed.text) fullText += parsed.text;
+              } catch {}
+            }
+          }
+        }
+      }
+
+      if (fullText) {
+        const typingDelay = Math.max(1500, fullText.length * 50);
+        await new Promise((resolve) => setTimeout(resolve, typingDelay));
+        setMessages((prev) => [...prev, {
+          id: `assistant-${Date.now()}`,
+          role: "assistant",
+          content: fullText.replace(/\n+/g, " ").trim(),
+        }]);
+      }
+    } catch (err) {
+      console.error("Follow-up error:", err);
+    } finally {
+      setStreaming(false);
+      setStreamText("");
+    }
+  }
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => clearFollowUp();
+  }, []);
+
   async function handleSend(message: string) {
+    clearFollowUp();
+    followUpSent.current = false;
     const tempId = `temp-${Date.now()}`;
     const userMsg: Message = { id: tempId, role: "user", content: message };
     setMessages((prev) => [...prev, userMsg]);
@@ -101,7 +179,6 @@ export default function ChatPage() {
                 const parsed = JSON.parse(data);
                 if (parsed.text) {
                   fullText += parsed.text;
-                  setStreamText(fullText);
                 }
               } catch {
                 // Skip malformed chunks
@@ -111,14 +188,18 @@ export default function ChatPage() {
         }
       }
 
-      // Add the complete assistant message
+      // Simulate typing delay based on response length, then show all at once
       if (fullText) {
+        const typingDelay = Math.max(1500, fullText.length * 50);
+        await new Promise((resolve) => setTimeout(resolve, typingDelay));
+
         const assistantMsg: Message = {
           id: `assistant-${Date.now()}`,
           role: "assistant",
-          content: fullText,
+          content: fullText.replace(/\n+/g, " ").trim(),
         };
         setMessages((prev) => [...prev, assistantMsg]);
+        scheduleFollowUp();
       }
     } catch (err) {
       console.error("Send error:", err);
@@ -137,7 +218,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex h-[calc(100dvh-7rem)] flex-col">
+    <div className="mx-auto flex h-[calc(100dvh-4.25rem)] w-full max-w-lg flex-col">
       {/* Chat header */}
       <div className="flex items-center gap-3 border-b border-taupe/10 px-4 py-3">
         <button onClick={() => router.back()} className="text-taupe/60">
@@ -145,7 +226,7 @@ export default function ChatPage() {
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
         </button>
-        <PersonaAvatar src={persona.image} name={persona.name} size={36} />
+        <PersonaAvatar src={persona.image} name={persona.name} size={48} />
         <div>
           <p className="text-sm font-bold">{persona.name}</p>
           <p className="text-[10px] text-taupe/50">Online now</p>

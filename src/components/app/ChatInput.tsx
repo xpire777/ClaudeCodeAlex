@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function ChatInput({
   onSend,
@@ -12,10 +12,14 @@ export default function ChatInput({
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [disabled]);
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = value.trim();
-    if (!trimmed || disabled) return;
+    if (!trimmed) return;
     onSend(trimmed);
     setValue("");
     inputRef.current?.focus();
@@ -32,12 +36,12 @@ export default function ChatInput({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="Message..."
-        disabled={disabled}
-        className="flex-1 rounded-full bg-taupe/10 px-4 py-2.5 text-sm text-cream placeholder:text-taupe/30 focus:outline-none disabled:opacity-50"
+        autoFocus
+        className="flex-1 rounded-full bg-taupe/10 px-4 py-2.5 text-sm text-cream placeholder:text-taupe/30 focus:outline-none"
       />
       <button
         type="submit"
-        disabled={disabled || !value.trim()}
+        disabled={!value.trim()}
         className="flex h-10 w-10 items-center justify-center rounded-full bg-burgundy/80 transition-opacity hover:opacity-90 disabled:opacity-30"
       >
         <svg

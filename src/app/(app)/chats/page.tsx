@@ -74,7 +74,7 @@ export default function ChatsPage() {
   }
 
   return (
-    <div className="px-5 py-6">
+    <div className="mx-auto max-w-2xl px-5 py-6">
       <h1 className="mb-6 text-xl font-bold tracking-wider">Chats</h1>
 
       {loading ? (
@@ -107,7 +107,7 @@ export default function ChatsPage() {
                 <PersonaAvatar
                   src={persona.image}
                   name={persona.name}
-                  size={48}
+                  size={64}
                 />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between">
