@@ -37,7 +37,7 @@ function PhoneFrame({
       className={`relative w-[260px] rounded-[40px] border-[3px] border-taupe/20 bg-[#1a1815] p-3 shadow-2xl sm:w-[280px] ${className}`}
     >
       <div className="absolute left-1/2 top-2 h-5 w-24 -translate-x-1/2 rounded-full bg-[#1a1815]" />
-      <div className="h-[520px] overflow-hidden rounded-[32px] bg-[#252220]">{children}</div>
+      <div className="h-[520px] overflow-hidden rounded-[25px] bg-[#252220]">{children}</div>
     </div>
   );
 }
