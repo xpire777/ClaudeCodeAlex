@@ -2,8 +2,16 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const { password } = await request.json();
+  const stagingPassword = process.env.STAGING_PASSWORD;
 
-  if (password !== process.env.STAGING_PASSWORD) {
+  if (!stagingPassword) {
+    return NextResponse.json(
+      { error: "STAGING_PASSWORD not configured" },
+      { status: 500 }
+    );
+  }
+
+  if (password !== stagingPassword) {
     return NextResponse.json({ error: "Incorrect password" }, { status: 401 });
   }
 
