@@ -1,0 +1,13 @@
+export default function TypingIndicator() {
+  return (
+    <div className="flex items-start">
+      <div className="rounded-2xl rounded-bl-md bg-taupe/15 px-4 py-3">
+        <div className="flex gap-1">
+          <span className="h-2 w-2 animate-bounce rounded-full bg-taupe/40 [animation-delay:0ms]" />
+          <span className="h-2 w-2 animate-bounce rounded-full bg-taupe/40 [animation-delay:150ms]" />
+          <span className="h-2 w-2 animate-bounce rounded-full bg-taupe/40 [animation-delay:300ms]" />
+        </div>
+      </div>
+    </div>
+  );
+}
