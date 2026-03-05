@@ -12,14 +12,17 @@ export async function updateSession(request: NextRequest) {
     pathname === "/gate" ||
     pathname.startsWith("/api/gate");
 
+  // Public routes: skip all middleware logic
+  if (isPublicRoute) {
+    return NextResponse.next();
+  }
+
   // Check staging gate for all non-public routes
-  if (!isPublicRoute) {
-    const hasStagingAccess = request.cookies.get("staging_access")?.value === "true";
-    if (!hasStagingAccess) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/gate";
-      return NextResponse.redirect(url);
-    }
+  const hasStagingAccess = request.cookies.get("staging_access")?.value === "true";
+  if (!hasStagingAccess) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/gate";
+    return NextResponse.redirect(url);
   }
 
   let supabaseResponse = NextResponse.next({
