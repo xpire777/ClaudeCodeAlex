@@ -44,8 +44,8 @@ export default function SignupPage() {
 
       setSuccess(true);
       setLoading(false);
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       setLoading(false);
     }
   }

@@ -30,8 +30,8 @@ export default function LoginPage() {
       }
 
       window.location.href = "/overview";
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       setLoading(false);
     }
   }
