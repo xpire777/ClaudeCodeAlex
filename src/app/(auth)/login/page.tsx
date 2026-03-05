@@ -31,7 +31,7 @@ export default function LoginPage() {
 
       window.location.href = "/overview";
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      setError(String(err));
       setLoading(false);
     }
   }
