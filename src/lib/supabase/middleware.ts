@@ -2,6 +2,26 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // Public routes that don't need staging gate
+  const isPublicRoute =
+    pathname === "/" ||
+    pathname === "/privacy" ||
+    pathname === "/terms" ||
+    pathname === "/gate" ||
+    pathname.startsWith("/api/gate");
+
+  // Check staging gate for all non-public routes
+  if (!isPublicRoute) {
+    const hasStagingAccess = request.cookies.get("staging_access")?.value === "true";
+    if (!hasStagingAccess) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/gate";
+      return NextResponse.redirect(url);
+    }
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -35,10 +55,12 @@ export async function updateSession(request: NextRequest) {
 
   // Protected app routes - redirect to login if not authenticated
   const isAppRoute =
+    request.nextUrl.pathname.startsWith("/overview") ||
     request.nextUrl.pathname.startsWith("/discover") ||
     request.nextUrl.pathname.startsWith("/profile") ||
     request.nextUrl.pathname.startsWith("/chat") ||
-    request.nextUrl.pathname.startsWith("/chats");
+    request.nextUrl.pathname.startsWith("/chats") ||
+    request.nextUrl.pathname.startsWith("/saved");
 
   if (isAppRoute && !user) {
     const url = request.nextUrl.clone();
@@ -53,7 +75,7 @@ export async function updateSession(request: NextRequest) {
 
   if (isAuthRoute && user) {
     const url = request.nextUrl.clone();
-    url.pathname = "/discover";
+    url.pathname = "/overview";
     return NextResponse.redirect(url);
   }
 

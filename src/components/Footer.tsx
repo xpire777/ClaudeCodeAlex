@@ -18,6 +18,9 @@ export default function Footer() {
         <Link href="/terms" className="transition-colors hover:text-dark">
           Terms
         </Link>
+        <Link href="/gate" className="transition-colors hover:text-dark">
+          Access
+        </Link>
       </div>
 
       <p className="text-xs text-taupe/60">
