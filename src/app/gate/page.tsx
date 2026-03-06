@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 
 export default function GatePage() {
   const [password, setPassword] = useState("");
@@ -30,20 +29,15 @@ export default function GatePage() {
 
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center bg-dark px-6">
-      <div className="w-full max-w-sm">
-        <div className="mb-10 flex justify-center">
-          <Image
-            src="/logos/logo_wordmark.svg"
-            alt="CABN"
-            width={120}
-            height={30}
-          />
-        </div>
+      <div className="mb-12 text-center">
+        <h1 className="text-4xl font-bold tracking-[0.3em] text-cream">CABN</h1>
+      </div>
 
-        <h1 className="mb-2 text-center text-2xl font-bold tracking-wider text-cream">
+      <div className="w-full max-w-sm">
+        <h2 className="mb-2 text-center text-2xl font-bold tracking-wider text-cream">
           Staging Access
-        </h1>
-        <p className="mb-8 text-center text-sm text-taupe">
+        </h2>
+        <p className="mb-8 text-center text-base text-taupe">
           Enter the password to continue
         </p>
 
