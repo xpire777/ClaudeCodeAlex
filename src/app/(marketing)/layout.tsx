@@ -23,12 +23,21 @@ export const metadata: Metadata = {
     url: "https://cabn.io",
     siteName: "CABN",
     type: "website",
+    images: [
+      {
+        url: "https://cabn.io/og.png",
+        width: 1200,
+        height: 630,
+        alt: "CABN - Your Digital Persona Companion",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "CABN - Your Digital Persona Companion",
     description:
       "A digital companion who is always there and always willing to lend an ear. Curated AI personas for men and women. Join the waitlist.",
+    images: ["https://cabn.io/og.png"],
   },
   icons: {
     icon: "/logos/logo_icon.svg",
