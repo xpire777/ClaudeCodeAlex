@@ -21,10 +21,6 @@ body {
   font-family: Georgia, "Times New Roman", serif;
 }
 
-section {
-  isolation: isolate;
-}
-
 @keyframes fade-in-up {
   from {
     opacity: 0;
@@ -54,10 +50,6 @@ section {
 
 .animate-delay-400 {
   animation-delay: 400ms;
-}
-
-.animate-delay-500 {
-  animation-delay: 500ms;
 }
 
 @keyframes float {

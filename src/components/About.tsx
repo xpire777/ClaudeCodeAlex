@@ -20,8 +20,6 @@ const values = [
   },
 ];
 
-const delayClasses = ["animate-delay-200", "animate-delay-300", "animate-delay-400"];
-
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
@@ -48,15 +46,19 @@ export default function About() {
     >
       <div className="max-w-3xl text-center">
         <h2
-          className={`mb-4 text-2xl font-bold tracking-[0.12em] text-cream sm:text-3xl ${
-            visible ? "animate-fade-in-up" : "opacity-0"
+          className={`mb-4 text-2xl font-bold tracking-[0.12em] text-cream transition-all duration-700 sm:text-3xl ${
+            visible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-6"
           }`}
         >
           What is CABN?
         </h2>
         <p
-          className={`mb-14 text-lg leading-relaxed text-taupe ${
-            visible ? "animate-fade-in-up animate-delay-100" : "opacity-0"
+          className={`mb-14 text-lg leading-relaxed text-taupe transition-all duration-700 delay-100 ${
+            visible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-6"
           }`}
         >
           The right personality is out there. CABN helps you find them. A
@@ -68,9 +70,12 @@ export default function About() {
           {values.map((v, i) => (
             <div
               key={v.title}
-              className={`flex flex-col items-center ${
-                visible ? `animate-fade-in-up ${delayClasses[i]}` : "opacity-0"
+              className={`flex flex-col items-center transition-all duration-700 ${
+                visible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-6"
               }`}
+              style={{ transitionDelay: `${200 + i * 100}ms` }}
             >
               <h3 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-burgundy">
                 {v.title}
