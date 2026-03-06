@@ -50,11 +50,11 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-function MiniPersona({ persona, saved }: { persona: Persona; saved?: boolean }) {
+function MiniPersona({ persona, saved, onTap }: { persona: Persona; saved?: boolean; onTap?: (p: Persona) => void }) {
   return (
-    <Link
-      href={`/profile/${persona.slug}`}
-      className="group flex shrink-0 flex-col items-center gap-2"
+    <button
+      onClick={() => onTap?.(persona)}
+      className="group flex shrink-0 flex-col items-center gap-2 text-left"
     >
       <div className="relative h-28 w-28 overflow-hidden rounded-xl ring-2 ring-taupe/10 transition-all group-hover:ring-burgundy/40">
         <Image
@@ -75,7 +75,71 @@ function MiniPersona({ persona, saved }: { persona: Persona; saved?: boolean }) 
         <p className="text-xs font-bold text-cream">{persona.name}</p>
         <p className="text-[10px] text-taupe/40">{persona.archetype}</p>
       </div>
-    </Link>
+    </button>
+  );
+}
+
+function PersonaLightbox({ persona, onClose }: { persona: Persona; onClose: () => void }) {
+  const router = useRouter();
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-sm rounded-2xl border border-taupe/10 bg-surface-light p-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-dark/50 text-taupe transition-colors hover:text-cream"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+        <div className="flex flex-col items-center">
+          <div className="relative mb-4 h-48 w-48 overflow-hidden rounded-full ring-2 ring-taupe/10">
+            <Image
+              src={persona.image}
+              alt={persona.name}
+              fill
+              className="object-cover object-[center_20%]"
+            />
+          </div>
+          <h3 className="text-xl font-bold tracking-wider text-cream">
+            {persona.name}, {persona.age}
+          </h3>
+          <p className="mt-0.5 text-xs font-bold uppercase tracking-widest text-burgundy">
+            {persona.archetype}
+          </p>
+          <p className="mt-0.5 text-sm text-taupe/50">{persona.city}</p>
+          <p className="mt-2 text-center text-sm text-taupe/60">{persona.tagline}</p>
+          <div className="mt-1 flex flex-wrap justify-center gap-1.5">
+            {persona.vibeTags.map((tag) => (
+              <span key={tag} className="rounded-full bg-dark/50 px-2.5 py-0.5 text-[10px] text-taupe/60">
+                {tag}
+              </span>
+            ))}
+          </div>
+          <div className="mt-5 flex gap-3">
+            <button
+              onClick={() => router.push(`/chat/${persona.slug}`)}
+              className="rounded-full bg-burgundy px-5 py-2 text-xs font-bold tracking-wider text-cream transition-opacity hover:opacity-90"
+            >
+              Chat
+            </button>
+            <button
+              onClick={() => router.push(`/profile/${persona.slug}`)}
+              className="rounded-full border border-taupe/20 px-5 py-2 text-xs font-bold tracking-wider text-taupe transition-colors hover:text-cream"
+            >
+              Full Profile
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -84,6 +148,7 @@ export default function OverviewPage() {
   const [savedSlugs, setSavedSlugs] = useState<string[]>([]);
   const [chattedSlugs, setChattedSlugs] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lightboxPersona, setLightboxPersona] = useState<Persona | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -159,7 +224,7 @@ export default function OverviewPage() {
           <SectionLabel>New Personas</SectionLabel>
           <div className="scrollbar-hide -mx-1 flex gap-5 overflow-x-auto px-1 py-1 md:flex-wrap md:overflow-visible">
             {personas.map((persona) => (
-              <MiniPersona key={persona.slug} persona={persona} saved={savedSlugs.includes(persona.slug)} />
+              <MiniPersona key={persona.slug} persona={persona} saved={savedSlugs.includes(persona.slug)} onTap={setLightboxPersona} />
             ))}
           </div>
         </BentoTile>
@@ -312,6 +377,10 @@ export default function OverviewPage() {
           </Link>
         </BentoTile>
       </div>
+
+      {lightboxPersona && (
+        <PersonaLightbox persona={lightboxPersona} onClose={() => setLightboxPersona(null)} />
+      )}
     </div>
   );
 }
