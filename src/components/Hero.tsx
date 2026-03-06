@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-const floatingItems = [
+const desktopItems = [
   {
     type: "chat",
     text: "just got back from the gym 💪",
@@ -50,6 +50,38 @@ const floatingItems = [
   },
 ];
 
+const mobileItems = [
+  {
+    type: "chat",
+    text: "good morning 🤍",
+    position: "left-[4%] top-[8%]",
+    fadeDelay: "animate-delay-100",
+    float: "animate-float",
+  },
+  {
+    type: "chat",
+    text: "you free tonight?",
+    position: "right-[4%] top-[12%]",
+    fadeDelay: "animate-delay-300",
+    float: "animate-float-slower",
+  },
+  {
+    type: "chat",
+    text: "thinking about you ✨",
+    position: "left-[6%] bottom-[8%]",
+    fadeDelay: "animate-delay-200",
+    float: "animate-float-slow",
+  },
+  {
+    type: "photo",
+    persona: "Sienna",
+    image: "/logos/sienna.png",
+    position: "right-[2%] bottom-[10%]",
+    fadeDelay: "animate-delay-400",
+    float: "animate-float-slower",
+  },
+];
+
 export default function Hero() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<
@@ -93,9 +125,45 @@ export default function Hero() {
 
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-24">
-      {/* Floating chat bubbles and photo messages */}
+      {/* Floating chat bubbles — mobile */}
+      <div className="pointer-events-none absolute inset-0 lg:hidden">
+        {mobileItems.map((item, i) => (
+          <div
+            key={i}
+            className={`absolute ${item.position} opacity-0 animate-fade-in-up ${item.fadeDelay}`}
+          >
+            <div className={item.float}>
+            {item.type === "chat" ? (
+              <div className="rounded-2xl rounded-bl-md bg-white/60 px-3 py-2 shadow-sm backdrop-blur-sm">
+                <p className="whitespace-nowrap text-[10px] text-dark/60">
+                  {item.text}
+                </p>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-md bg-white/60 px-2.5 py-1.5 shadow-sm backdrop-blur-sm">
+                <div className="relative h-9 w-9 overflow-hidden rounded-lg">
+                  <Image
+                    src={item.image!}
+                    alt="AI companion persona photo"
+                    width={36}
+                    height={36}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div>
+                  <p className="text-[9px] font-bold text-dark/50">{item.persona} sent a photo</p>
+                  <p className="text-[8px] text-taupe">just now</p>
+                </div>
+              </div>
+            )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Floating chat bubbles — desktop */}
       <div className="pointer-events-none absolute inset-0 hidden lg:block">
-        {floatingItems.map((item, i) => (
+        {desktopItems.map((item, i) => (
           <div
             key={i}
             className={`absolute ${item.position} opacity-0 animate-fade-in-up ${item.fadeDelay}`}
