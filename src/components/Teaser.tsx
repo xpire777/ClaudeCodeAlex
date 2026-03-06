@@ -34,7 +34,8 @@ function PhoneFrame({
 }) {
   return (
     <div
-      className={`relative w-[260px] rounded-[40px] border-[3px] border-taupe/20 bg-[#1a1815] p-3 shadow-2xl sm:w-[280px] ${className}`}
+      style={{ boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}
+      className={`relative w-[260px] rounded-[40px] border-[3px] border-taupe/20 bg-[#1a1815] p-3 sm:w-[280px] ${className}`}
     >
       <div className="absolute left-1/2 top-2 h-5 w-24 -translate-x-1/2 rounded-full bg-[#1a1815]" />
       <div className="h-[520px] overflow-hidden rounded-[25px] bg-[#252220]">{children}</div>
@@ -111,18 +112,18 @@ export default function Teaser() {
   return (
     <section
       ref={sectionRef}
-      className="flex flex-col items-center px-6 py-24"
+      className="flex flex-col items-center bg-cream px-6 py-24"
     >
       <h2
-        className={`mb-4 text-2xl font-bold tracking-[0.12em] text-dark transition-all duration-700 sm:text-3xl ${
-          visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+        className={`mb-4 text-2xl font-bold tracking-[0.12em] text-dark sm:text-3xl ${
+          visible ? "animate-fade-in-up" : "opacity-0"
         }`}
       >
         A Glimpse Inside
       </h2>
       <p
-        className={`mb-14 text-taupe transition-all duration-700 delay-100 ${
-          visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+        className={`mb-14 text-taupe ${
+          visible ? "animate-fade-in-up animate-delay-100" : "opacity-0"
         }`}
       >
         This is what your mornings could look like.
@@ -131,9 +132,7 @@ export default function Teaser() {
       <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-center lg:gap-10">
         {/* Phone 1: Persona Picker */}
         <div
-          className={`transition-all duration-1000 delay-200 ${
-            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+          className={visible ? "animate-fade-in-up animate-delay-200" : "opacity-0"}
         >
           <PhoneFrame>
             <StatusBar time="9:41" />
@@ -180,9 +179,7 @@ export default function Teaser() {
 
         {/* Phone 2: Sienna Chat (original) */}
         <div
-          className={`transition-all duration-1000 delay-300 ${
-            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+          className={visible ? "animate-fade-in-up animate-delay-300" : "opacity-0"}
         >
           <PhoneFrame>
             <StatusBar time="9:16 AM" />
@@ -216,9 +213,7 @@ export default function Teaser() {
 
         {/* Phone 3: Photo Request Chat */}
         <div
-          className={`transition-all duration-1000 delay-[400ms] ${
-            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+          className={visible ? "animate-fade-in-up animate-delay-400" : "opacity-0"}
         >
           <PhoneFrame>
             <StatusBar time="3:01 PM" />

@@ -21,6 +21,10 @@ body {
   font-family: Georgia, "Times New Roman", serif;
 }
 
+section {
+  isolation: isolate;
+}
+
 @keyframes fade-in-up {
   from {
     opacity: 0;
