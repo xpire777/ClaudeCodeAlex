@@ -35,6 +35,15 @@ const faqs = [
   },
 ];
 
+const delayClasses = [
+  "animate-delay-100",
+  "animate-delay-200",
+  "animate-delay-200",
+  "animate-delay-300",
+  "animate-delay-300",
+  "animate-delay-400",
+];
+
 export default function FAQ() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
@@ -61,8 +70,8 @@ export default function FAQ() {
       className="flex flex-col items-center bg-dark px-6 py-24"
     >
       <h2
-        className={`mb-12 text-2xl font-bold tracking-[0.12em] text-cream transition-all duration-700 sm:text-3xl ${
-          visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+        className={`mb-12 text-2xl font-bold tracking-[0.12em] text-cream sm:text-3xl ${
+          visible ? "animate-fade-in-up" : "opacity-0"
         }`}
       >
         Frequently Asked Questions
@@ -72,12 +81,9 @@ export default function FAQ() {
         {faqs.map((faq, i) => (
           <div
             key={i}
-            className={`border-b border-taupe/15 transition-all duration-700 ${
-              visible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-6"
+            className={`border-b border-taupe/15 ${
+              visible ? `animate-fade-in-up ${delayClasses[i]}` : "opacity-0"
             }`}
-            style={{ transitionDelay: `${100 + i * 80}ms` }}
           >
             <button
               onClick={() => setOpenIndex(openIndex === i ? null : i)}
