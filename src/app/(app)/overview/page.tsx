@@ -251,22 +251,22 @@ export default function OverviewPage() {
           )}
         </BentoTile>
 
-        {/* Coming Soon: Gifting */}
-        <BentoTile className="border-burgundy/20 bg-dark">
-          <span className="inline-block rounded-full bg-burgundy/20 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-burgundy">
-            Coming Soon
-          </span>
-          <h3 className="mt-2 text-base font-bold tracking-wider text-cream">
-            Gifting Tier
+        {/* Find Your Match Quiz */}
+        <BentoTile className="flex flex-col items-center justify-center border-burgundy/20 bg-dark text-center">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mb-2 text-burgundy">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+          <h3 className="text-base font-bold tracking-wider text-cream">
+            Find Your Match
           </h3>
           <p className="mt-1 text-xs text-taupe/50">
-            Real gifts from your persona. Flowers, birthday cards, and thoughtful surprises delivered to your door.
+            Take a quick quiz and we&apos;ll match you with your perfect persona.
           </p>
           <button
-            disabled
-            className="mt-3 rounded-full bg-burgundy/20 px-4 py-1.5 text-[10px] font-bold tracking-wider text-burgundy/40 cursor-not-allowed"
+            onClick={() => router.push("/quiz")}
+            className="mt-3 rounded-full bg-burgundy px-5 py-1.5 text-[10px] font-bold tracking-wider text-cream transition-opacity hover:opacity-90"
           >
-            Notify Me
+            Take the Quiz
           </button>
         </BentoTile>
 
