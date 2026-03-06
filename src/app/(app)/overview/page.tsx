@@ -50,7 +50,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-function MiniPersona({ persona }: { persona: Persona }) {
+function MiniPersona({ persona, saved }: { persona: Persona; saved?: boolean }) {
   return (
     <Link
       href={`/profile/${persona.slug}`}
@@ -63,6 +63,13 @@ function MiniPersona({ persona }: { persona: Persona }) {
           fill
           className="object-cover object-[center_20%]"
         />
+        {saved && (
+          <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-burgundy/90 shadow">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-cream">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+          </div>
+        )}
       </div>
       <div className="text-center">
         <p className="text-xs font-bold text-cream">{persona.name}</p>
@@ -152,7 +159,7 @@ export default function OverviewPage() {
           <SectionLabel>New Personas</SectionLabel>
           <div className="scrollbar-hide -mx-1 flex gap-5 overflow-x-auto px-1 py-1 md:flex-wrap md:overflow-visible">
             {personas.map((persona) => (
-              <MiniPersona key={persona.slug} persona={persona} />
+              <MiniPersona key={persona.slug} persona={persona} saved={savedSlugs.includes(persona.slug)} />
             ))}
           </div>
         </BentoTile>
@@ -238,7 +245,7 @@ export default function OverviewPage() {
           ) : (
             <div className="scrollbar-hide -mx-1 flex gap-4 overflow-x-auto px-1 py-1">
               {savedPersonas.map((persona) => (
-                <MiniPersona key={persona.slug} persona={persona} />
+                <MiniPersona key={persona.slug} persona={persona} saved={savedSlugs.includes(persona.slug)} />
               ))}
             </div>
           )}
@@ -268,7 +275,7 @@ export default function OverviewPage() {
           <SectionLabel>Suggested For You</SectionLabel>
           <div className="scrollbar-hide -mx-1 flex gap-5 overflow-x-auto px-1 py-1">
             {suggestedFinal.map((persona) => (
-              <MiniPersona key={persona.slug} persona={persona} />
+              <MiniPersona key={persona.slug} persona={persona} saved={savedSlugs.includes(persona.slug)} />
             ))}
           </div>
         </BentoTile>
