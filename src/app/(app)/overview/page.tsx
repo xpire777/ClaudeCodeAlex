@@ -54,9 +54,9 @@ function MiniPersona({ persona }: { persona: Persona }) {
   return (
     <Link
       href={`/profile/${persona.slug}`}
-      className="group flex flex-col items-center gap-2"
+      className="group flex shrink-0 flex-col items-center gap-2"
     >
-      <div className="relative h-16 w-16 overflow-hidden rounded-full ring-2 ring-taupe/10 transition-all group-hover:ring-burgundy/40">
+      <div className="relative h-28 w-28 overflow-hidden rounded-xl ring-2 ring-taupe/10 transition-all group-hover:ring-burgundy/40">
         <Image
           src={persona.image}
           alt={persona.name}
@@ -66,7 +66,7 @@ function MiniPersona({ persona }: { persona: Persona }) {
       </div>
       <div className="text-center">
         <p className="text-xs font-bold text-cream">{persona.name}</p>
-        <p className="text-[10px] text-taupe/40">{persona.city}</p>
+        <p className="text-[10px] text-taupe/40">{persona.archetype}</p>
       </div>
     </Link>
   );
