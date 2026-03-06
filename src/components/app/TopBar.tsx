@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 const menuItems = [
   { label: "Overview", href: "/overview" },
@@ -14,6 +16,13 @@ const menuItems = [
 export default function TopBar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleSignOut() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+  }
 
   return (
     <>
@@ -58,7 +67,7 @@ export default function TopBar() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className={`block px-6 py-3 text-right text-sm tracking-wider transition-colors first:rounded-t-xl last:rounded-b-xl ${
+                className={`block px-6 py-3 text-right text-sm tracking-wider transition-colors first:rounded-t-xl ${
                   active
                     ? "font-bold text-cream"
                     : "text-taupe hover:text-cream"
@@ -68,6 +77,16 @@ export default function TopBar() {
               </Link>
             );
           })}
+          <div className="border-t border-taupe/10" />
+          <button
+            onClick={() => {
+              setOpen(false);
+              handleSignOut();
+            }}
+            className="block w-full rounded-b-xl px-6 py-3 text-right text-sm tracking-wider text-taupe transition-colors hover:text-cream"
+          >
+            Sign Out
+          </button>
         </div>
       )}
     </>
