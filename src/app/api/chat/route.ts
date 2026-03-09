@@ -156,13 +156,22 @@ export async function POST(request: NextRequest) {
 
     console.log("[chat] Sending to Claude:", apiMessages.length, "messages, followUp:", !!followUp);
 
+    // Deduplicate: scan for repeated assistant messages and add a reminder
+    const assistantMessages = apiMessages.filter(m => m.role === "assistant" && typeof m.content === "string");
+    const lastThree = assistantMessages.slice(-3).map(m => (m.content as string).toLowerCase().trim());
+    const hasRepetition = lastThree.length >= 2 && new Set(lastThree).size < lastThree.length;
+
+    const finalSystem = hasRepetition
+      ? systemPrompt + "\n\nCRITICAL: You have been repeating yourself in this conversation. Your last few messages were nearly identical. You MUST say something completely different this time. Change the topic, react differently, or say something unexpected."
+      : systemPrompt;
+
     // Stream response from Claude
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const stream = anthropic.messages.stream({
       model: "claude-sonnet-4-20250514",
-      max_tokens: 150,
-      temperature: 0.9,
-      system: systemPrompt,
+      max_tokens: 300,
+      temperature: 1.0,
+      system: finalSystem,
       messages: apiMessages as any,
     });
 
