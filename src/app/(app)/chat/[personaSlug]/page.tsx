@@ -67,7 +67,15 @@ export default function ChatPage() {
         .order("created_at", { ascending: true });
 
       if (history) {
-        setMessages(history as Message[]);
+        setMessages(
+          (history as Message[]).map((msg) => {
+            if (msg.role === "assistant") {
+              const { cleanText } = parsePhotoTag(msg.content);
+              return { ...msg, content: cleanText };
+            }
+            return msg;
+          })
+        );
       }
     }
 

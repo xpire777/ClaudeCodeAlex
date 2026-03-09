@@ -181,11 +181,15 @@ export async function POST(request: NextRequest) {
             }
           }
 
-          // Save assistant message after streaming completes
+          // Save assistant message after streaming completes (strip photo tags)
+          const cleanContent = fullResponse
+            .replace(/\n+/g, " ")
+            .replace(/\[SEND_PHOTO:\s*.+?\]/g, "")
+            .trim();
           await supabase.from("messages").insert({
             conversation_id: conversation.id,
             role: "assistant",
-            content: fullResponse.replace(/\n+/g, " ").trim(),
+            content: cleanContent,
           });
 
           // Update last_message_at
