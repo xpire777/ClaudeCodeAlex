@@ -16,7 +16,7 @@ const faqs = [
   {
     question: "How does it work?",
     answer:
-      "Once CABN launches, you'll pick a persona that matches your vibe. From there, you can text them anytime, request photos, and build an ongoing connection. Your persona remembers your conversations and grows with you over time.",
+      "Once CABN launches, you'll pick a persona that matches your vibe. From there, you can message them anytime, request photos, and build an ongoing connection. Your persona remembers your conversations and grows with you over time.",
   },
   {
     question: "Is CABN free?",
@@ -27,6 +27,11 @@ const faqs = [
     question: "When does CABN launch?",
     answer:
       "We're launching soon. Join the waitlist at the top of this page to be the first to know when we go live.",
+  },
+  {
+    question: "Are the personas real people?",
+    answer:
+      "No. All CABN personas are AI-powered digital companions. They are not real people, but they are designed to feel natural and engaging so you can build a meaningful connection with them.",
   },
   {
     question: "Can I switch personas?",

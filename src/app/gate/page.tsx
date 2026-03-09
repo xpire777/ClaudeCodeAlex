@@ -79,7 +79,7 @@ export default function GatePage() {
           <button
             type="submit"
             disabled={loading}
-            className="rounded-xl bg-burgundy py-3 text-sm font-bold tracking-wider text-cream transition-opacity hover:opacity-90 disabled:opacity-50"
+            className="mx-auto w-1/2 rounded-xl bg-burgundy py-3 text-sm font-bold tracking-wider text-cream transition-opacity hover:opacity-90 disabled:opacity-50 sm:w-full"
           >
             {loading ? "Verifying..." : "Enter"}
           </button>

@@ -218,7 +218,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="mx-auto flex h-[calc(100dvh-4.25rem)] w-full max-w-lg flex-col">
+    <div className="mx-auto flex h-[calc(100dvh-4.25rem)] w-full max-w-lg flex-col overflow-x-hidden">
       {/* Chat header */}
       <div className="flex items-center gap-3 border-b border-taupe/10 px-4 py-3">
         <button onClick={() => router.back()} className="text-taupe/60">

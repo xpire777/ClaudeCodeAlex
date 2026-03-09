@@ -14,7 +14,7 @@ export default function AuthLayout({
     <div className="flex min-h-dvh flex-col items-center justify-center bg-surface px-6">
       <div className="mb-8">
         <Image
-          src="/logos/logo_reversed.svg"
+          src="/logos/logo_wordmark.svg"
           alt="CABN"
           width={120}
           height={40}
