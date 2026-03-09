@@ -154,12 +154,13 @@ export async function POST(request: NextRequest) {
     console.log("[chat] Sending to Claude:", apiMessages.length, "messages, followUp:", !!followUp);
 
     // Stream response from Claude
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const stream = anthropic.messages.stream({
       model: "claude-sonnet-4-20250514",
       max_tokens: 150,
       temperature: 0.9,
       system: systemPrompt,
-      messages: apiMessages,
+      messages: apiMessages as any,
     });
 
     let fullResponse = "";
