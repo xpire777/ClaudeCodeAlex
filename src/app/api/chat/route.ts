@@ -100,7 +100,10 @@ export async function POST(request: NextRequest) {
     type ContentBlock = TextBlock | ImageBlock;
     type ApiMessage = { role: "user" | "assistant"; content: string | ContentBlock[] };
 
-    const rawMessages: ApiMessage[] = (history || []).map((msg) => {
+    // Filter out empty messages from history (corrupted data)
+    const validHistory = (history || []).filter((msg) => msg.content && msg.content.trim().length > 0);
+
+    const rawMessages: ApiMessage[] = validHistory.map((msg) => {
       const role = msg.role as "user" | "assistant";
       const imageMatch = msg.content.match(/\[IMAGE:\s*(https?:\/\/[^\]]+)\]/);
       if (imageMatch && role === "user") {
@@ -186,11 +189,13 @@ export async function POST(request: NextRequest) {
             .replace(/\n+/g, " ")
             .replace(/\[SEND_PHOTO:\s*.+?\]/g, "")
             .trim();
-          await supabase.from("messages").insert({
-            conversation_id: conversation.id,
-            role: "assistant",
-            content: cleanContent,
-          });
+          if (cleanContent) {
+            await supabase.from("messages").insert({
+              conversation_id: conversation.id,
+              role: "assistant",
+              content: cleanContent,
+            });
+          }
 
           // Update last_message_at
           await supabase
