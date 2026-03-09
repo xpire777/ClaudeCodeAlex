@@ -61,9 +61,10 @@ export async function POST(request: NextRequest) {
     }
 
     const triggerWord = PERSONA_TRIGGER_WORDS[personaSlug] || personaSlug.toUpperCase();
+    const realism = "candid iPhone photo, natural skin texture, slight imperfections, no airbrushing, no filters, real life, not ai generated";
     const imagePrompt = prompt
-      ? `a photo of ${triggerWord}, ${prompt}`
-      : `a casual selfie photo of ${triggerWord}, natural lighting, realistic, high quality`;
+      ? `a photo of ${triggerWord}, ${prompt}, ${realism}`
+      : `a casual selfie photo of ${triggerWord}, natural lighting, ${realism}`;
 
     // Extract version hash from "owner/model:version" format
     const versionHash = modelVersion.split(":")[1];
@@ -77,8 +78,8 @@ export async function POST(request: NextRequest) {
       input: {
         prompt: imagePrompt,
         num_outputs: 1,
-        guidance_scale: 3.5,
-        num_inference_steps: 28,
+        guidance_scale: 2.5,
+        num_inference_steps: 36,
         output_format: "webp",
         output_quality: 90,
       },
