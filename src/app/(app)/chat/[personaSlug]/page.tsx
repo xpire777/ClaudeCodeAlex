@@ -402,7 +402,7 @@ export default function ChatPage() {
         </div>
 
         {/* Messages with subtle background */}
-        <div className="relative flex-1">
+        <div className="relative min-h-0 flex-1">
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-surface/0 via-burgundy/[0.02] to-surface/0" />
           {loading ? (
             <div className="flex h-full items-center justify-center">
