@@ -269,6 +269,111 @@ export default function ChatPage() {
     }
   }
 
+  async function handleSendImage(file: File) {
+    // Upload the image
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const tempId = `temp-img-${Date.now()}`;
+    const localUrl = URL.createObjectURL(file);
+
+    // Show user's image immediately
+    const userMsg: Message = {
+      id: tempId,
+      role: "user",
+      content: "",
+      imageUrl: localUrl,
+    };
+    setMessages((prev) => [...prev, userMsg]);
+
+    try {
+      const uploadRes = await fetch("/api/upload-image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadRes.ok) {
+        console.error("Failed to upload image");
+        return;
+      }
+
+      const { imageUrl } = await uploadRes.json();
+
+      // Update the message with the real URL
+      setMessages((prev) =>
+        prev.map((m) => (m.id === tempId ? { ...m, imageUrl } : m))
+      );
+
+      // Random "reading" delay
+      const readDelay = 1000 + Math.random() * 3000;
+      await new Promise((resolve) => setTimeout(resolve, readDelay));
+
+      setStreaming(true);
+      setStreamText("");
+
+      // Send to chat API with the image URL
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ personaSlug, imageUrl }),
+      });
+
+      if (!res.ok) throw new Error("Failed to get response");
+
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder();
+      let fullText = "";
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value);
+          for (const line of chunk.split("\n")) {
+            if (line.startsWith("data: ")) {
+              const data = line.slice(6);
+              if (data === "[DONE]") continue;
+              try {
+                const parsed = JSON.parse(data);
+                if (parsed.text) fullText += parsed.text;
+              } catch {}
+            }
+          }
+        }
+      }
+
+      if (fullText) {
+        const baseDelay = Math.max(1500, fullText.length * 50);
+        const jitter = (Math.random() - 0.5) * 2000;
+        const typingDelay = Math.max(1000, baseDelay + jitter);
+        await new Promise((resolve) => setTimeout(resolve, typingDelay));
+
+        const rawContent = fullText.replace(/\n+/g, " ").trim();
+        const { cleanText, photoPrompt } = parsePhotoTag(rawContent);
+
+        const msgId = `assistant-${Date.now()}`;
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: msgId,
+            role: "assistant",
+            content: cleanText,
+            imageLoading: !!photoPrompt,
+          },
+        ]);
+
+        if (photoPrompt) {
+          generatePersonaImage(msgId, photoPrompt);
+        }
+      }
+    } catch (err) {
+      console.error("Image send error:", err);
+    } finally {
+      setStreaming(false);
+      setStreamText("");
+    }
+  }
+
   if (!persona) {
     return (
       <div className="flex flex-1 items-center justify-center">
@@ -316,7 +421,7 @@ export default function ChatPage() {
       )}
 
       {/* Input */}
-      <ChatInput onSend={handleSend} disabled={streaming} />
+      <ChatInput onSend={handleSend} onSendImage={handleSendImage} disabled={streaming} />
     </div>
   );
 }

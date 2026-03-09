@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export default function ChatBubble({
   role,
   content,
@@ -38,14 +36,16 @@ export default function ChatBubble({
       )}
 
       {imageUrl && (
-        <div className="max-w-[70%] overflow-hidden rounded-2xl rounded-bl-md">
-          <Image
+        <div
+          className={`max-w-[70%] overflow-hidden rounded-2xl ${
+            isUser ? "rounded-br-md" : "rounded-bl-md"
+          }`}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={imageUrl}
             alt="Photo"
-            width={300}
-            height={400}
             className="h-auto w-full object-cover"
-            unoptimized
           />
         </div>
       )}

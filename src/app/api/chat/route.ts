@@ -42,9 +42,9 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { message, personaSlug, followUp } = await request.json();
+    const { message, personaSlug, followUp, imageUrl } = await request.json();
 
-    if ((!message && !followUp) || !personaSlug) {
+    if ((!message && !followUp && !imageUrl) || !personaSlug) {
       return Response.json({ error: "Missing message or persona" }, { status: 400 });
     }
 
@@ -75,11 +75,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Save user message (skip for follow-ups)
-    if (message && !followUp) {
+    if (!followUp && (message || imageUrl)) {
+      const content = imageUrl
+        ? message ? `[IMAGE: ${imageUrl}] ${message}` : `[IMAGE: ${imageUrl}]`
+        : message;
       await supabase.from("messages").insert({
         conversation_id: conversation.id,
         role: "user",
-        content: message,
+        content,
       });
     }
 
@@ -91,17 +94,41 @@ export async function POST(request: NextRequest) {
       .order("created_at", { ascending: true })
       .limit(MAX_CONTEXT_MESSAGES);
 
-    // Ensure messages alternate roles (Claude API requirement)
-    const rawMessages = (history || []).map((msg) => ({
-      role: msg.role as "user" | "assistant",
-      content: msg.content,
-    }));
+    // Build messages array, converting [IMAGE: url] tags to vision content
+    type TextBlock = { type: "text"; text: string };
+    type ImageBlock = { type: "image"; source: { type: "url"; url: string } };
+    type ContentBlock = TextBlock | ImageBlock;
+    type ApiMessage = { role: "user" | "assistant"; content: string | ContentBlock[] };
 
-    const messages: { role: "user" | "assistant"; content: string }[] = [];
+    const rawMessages: ApiMessage[] = (history || []).map((msg) => {
+      const role = msg.role as "user" | "assistant";
+      const imageMatch = msg.content.match(/\[IMAGE:\s*(https?:\/\/[^\]]+)\]/);
+      if (imageMatch && role === "user") {
+        const url = imageMatch[1];
+        const textPart = msg.content.replace(/\[IMAGE:\s*https?:\/\/[^\]]+\]/, "").trim();
+        const content: ContentBlock[] = [
+          { type: "image", source: { type: "url", url } },
+        ];
+        if (textPart) {
+          content.push({ type: "text", text: textPart });
+        } else {
+          content.push({ type: "text", text: "The user sent you a photo." });
+        }
+        return { role, content };
+      }
+      return { role, content: msg.content };
+    });
+
+    // Merge consecutive same-role messages (text-only)
+    const messages: ApiMessage[] = [];
     for (const msg of rawMessages) {
-      if (messages.length > 0 && messages[messages.length - 1].role === msg.role) {
-        // Merge consecutive same-role messages
-        messages[messages.length - 1].content += " " + msg.content;
+      if (
+        messages.length > 0 &&
+        messages[messages.length - 1].role === msg.role &&
+        typeof messages[messages.length - 1].content === "string" &&
+        typeof msg.content === "string"
+      ) {
+        (messages[messages.length - 1] as { role: string; content: string }).content += " " + msg.content;
       } else {
         messages.push({ ...msg });
       }
