@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const REACTIONS = ["❤️", "😂", "😮", "😢", "🔥", "👍"];
 
@@ -24,6 +24,17 @@ export default function ChatBubble({
   const [reaction, setReaction] = useState<string | null>(null);
   const [showReactions, setShowReactions] = useState(false);
   const [lightbox, setLightbox] = useState(false);
+
+  const closeLightbox = useCallback(() => setLightbox(false), []);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeLightbox();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [lightbox, closeLightbox]);
 
   return (
     <div className={`flex flex-col gap-1 ${isUser ? "items-end" : "items-start"}`}>
@@ -104,24 +115,25 @@ export default function ChatBubble({
           {lightbox && (
             <div
               className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-              onClick={() => setLightbox(false)}
+              onClick={closeLightbox}
             >
-              <button
-                onClick={() => setLightbox(false)}
-                className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-dark/70 text-taupe transition-colors hover:text-cream"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={imageUrl}
-                alt="Photo"
-                className="max-h-[85vh] max-w-full rounded-lg object-contain"
-                onClick={(e) => e.stopPropagation()}
-              />
+              <div className="relative" onClick={(e) => e.stopPropagation()}>
+                <button
+                  onClick={closeLightbox}
+                  className="absolute -right-3 -top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-dark/90 text-taupe shadow-lg transition-colors hover:text-cream"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={imageUrl}
+                  alt="Photo"
+                  className="max-h-[85vh] max-w-full rounded-lg object-contain"
+                />
+              </div>
             </div>
           )}
         </>
