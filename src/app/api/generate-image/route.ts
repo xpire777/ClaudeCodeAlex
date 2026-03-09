@@ -35,7 +35,6 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await getSupabase();
 
-    // Verify auth
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -54,6 +53,7 @@ export async function POST(request: NextRequest) {
 
     const modelVersion = PERSONA_LORA_MODELS[personaSlug];
     if (!modelVersion) {
+      console.log("[generate-image] No model for persona:", personaSlug);
       return Response.json(
         { error: "No image model available for this persona" },
         { status: 404 }
@@ -61,13 +61,19 @@ export async function POST(request: NextRequest) {
     }
 
     const triggerWord = PERSONA_TRIGGER_WORDS[personaSlug] || personaSlug.toUpperCase();
-
-    // Build the image prompt
     const imagePrompt = prompt
       ? `a photo of ${triggerWord}, ${prompt}`
       : `a casual selfie photo of ${triggerWord}, natural lighting, realistic, high quality`;
 
-    const output = await replicate.run(modelVersion as `${string}/${string}:${string}`, {
+    // Extract version hash from "owner/model:version" format
+    const versionHash = modelVersion.split(":")[1];
+
+    console.log("[generate-image] Creating prediction with version:", versionHash);
+    console.log("[generate-image] Prompt:", imagePrompt);
+
+    // Create prediction asynchronously — returns immediately, client polls for result
+    const prediction = await replicate.predictions.create({
+      version: versionHash,
       input: {
         prompt: imagePrompt,
         num_outputs: 1,
@@ -78,33 +84,13 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Output is an array of file URLs
-    const images = output as unknown[];
-    if (!images || images.length === 0) {
-      return Response.json(
-        { error: "No image generated" },
-        { status: 500 }
-      );
-    }
+    console.log("[generate-image] Prediction created:", prediction.id, prediction.status);
 
-    // The output could be a ReadableStream or URL string
-    const firstImage = images[0];
-    let imageUrl: string;
-
-    if (typeof firstImage === "string") {
-      imageUrl = firstImage;
-    } else if (firstImage && typeof firstImage === "object" && "url" in (firstImage as Record<string, unknown>)) {
-      imageUrl = (firstImage as { url: string }).url;
-    } else {
-      // It might be a FileOutput with a toString/url
-      imageUrl = String(firstImage);
-    }
-
-    return Response.json({ imageUrl });
+    return Response.json({ predictionId: prediction.id });
   } catch (err) {
-    console.error("Image generation error:", err);
+    console.error("[generate-image] Error:", err);
     return Response.json(
-      { error: "Failed to generate image" },
+      { error: "Failed to start image generation" },
       { status: 500 }
     );
   }

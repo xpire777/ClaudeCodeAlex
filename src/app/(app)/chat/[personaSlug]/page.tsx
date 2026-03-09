@@ -95,6 +95,7 @@ export default function ChatPage() {
 
   async function generatePersonaImage(msgId: string, prompt: string) {
     try {
+      // Start the prediction (returns immediately)
       const res = await fetch("/api/generate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -102,19 +103,45 @@ export default function ChatPage() {
       });
 
       if (!res.ok) {
-        console.error("Image generation failed");
-        // Remove loading state
+        console.error("Image generation failed to start");
         setMessages((prev) =>
           prev.map((m) => (m.id === msgId ? { ...m, imageLoading: false } : m))
         );
         return;
       }
 
-      const { imageUrl } = await res.json();
+      const { predictionId } = await res.json();
+
+      // Poll for result
+      let attempts = 0;
+      const maxAttempts = 60; // 60 * 2s = 2 minutes max
+      while (attempts < maxAttempts) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        attempts++;
+
+        const statusRes = await fetch(`/api/prediction-status?id=${predictionId}`);
+        if (!statusRes.ok) continue;
+
+        const statusData = await statusRes.json();
+
+        if (statusData.status === "succeeded" && statusData.imageUrl) {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === msgId ? { ...m, imageUrl: statusData.imageUrl, imageLoading: false } : m
+            )
+          );
+          return;
+        }
+
+        if (statusData.status === "failed") {
+          console.error("Image generation failed:", statusData.error);
+          break;
+        }
+      }
+
+      // If we get here, it failed or timed out
       setMessages((prev) =>
-        prev.map((m) =>
-          m.id === msgId ? { ...m, imageUrl, imageLoading: false } : m
-        )
+        prev.map((m) => (m.id === msgId ? { ...m, imageLoading: false } : m))
       );
     } catch (err) {
       console.error("Image generation error:", err);
