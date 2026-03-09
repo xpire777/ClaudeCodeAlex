@@ -73,7 +73,7 @@ export default function ChatConversationList({
   if (conversations.length === 0) return null;
 
   return (
-    <div className="hidden w-72 shrink-0 border-r border-taupe/10 lg:flex lg:flex-col">
+    <div className="hidden w-72 shrink-0 border-r border-taupe/10 bg-gradient-to-b from-surface-light to-dark/80 lg:flex lg:flex-col">
       <div className="border-b border-taupe/10 px-5 py-4">
         <h2 className="text-xs font-bold uppercase tracking-widest text-taupe/50">
           Messages
