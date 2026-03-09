@@ -345,34 +345,46 @@ export default function OverviewPage() {
           </div>
         </BentoTile>
 
-        {/* Most Popular — right column */}
-        <BentoTile className="overflow-hidden p-0">
+        {/* Featured — full-width banner */}
+        <BentoTile className="md:col-span-3 overflow-hidden p-0">
           <Link
             href={`/profile/${featuredPersona.slug}`}
-            className="group block h-full"
+            className="group flex h-full flex-col md:flex-row"
           >
-            <div className="relative h-36 w-full">
+            <div className="relative h-48 w-full md:h-auto md:w-72 shrink-0">
               <Image
                 src={featuredPersona.image}
                 alt={featuredPersona.name}
                 fill
                 className="object-cover object-[center_20%] transition-transform duration-300 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-surface-light via-surface-light/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-surface-light via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-surface-light" />
               <span className="absolute left-4 top-3 rounded-full bg-burgundy/90 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-cream">
                 Fan Favorite
               </span>
             </div>
-            <div className="px-5 pb-4 pt-2">
-              <p className="text-sm font-bold text-cream">
+            <div className="flex flex-1 flex-col justify-center px-6 py-5 md:py-8">
+              <p className="text-lg font-bold tracking-wide text-cream">
                 {featuredPersona.name}, {featuredPersona.age}
               </p>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-burgundy">
+              <p className="mt-0.5 text-[10px] font-bold uppercase tracking-widest text-burgundy">
                 {featuredPersona.archetype}
               </p>
-              <p className="mt-1 text-xs text-taupe/50">
+              <p className="mt-2 text-sm leading-relaxed text-taupe/50">
                 {featuredPersona.tagline}
               </p>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {featuredPersona.vibeTags.map((tag) => (
+                  <span key={tag} className="rounded-full bg-taupe/10 px-2.5 py-0.5 text-[10px] text-taupe/50">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-4">
+                <span className="rounded-full bg-burgundy px-5 py-2 text-[10px] font-bold tracking-wider text-cream transition-opacity group-hover:opacity-90">
+                  Meet {featuredPersona.name}
+                </span>
+              </div>
             </div>
           </Link>
         </BentoTile>
