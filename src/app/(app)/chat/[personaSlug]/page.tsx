@@ -8,6 +8,7 @@ import PersonaAvatar from "@/components/app/PersonaAvatar";
 import ChatMessages from "@/components/app/ChatMessages";
 import ChatInput from "@/components/app/ChatInput";
 import ChatSidebar from "@/components/app/ChatSidebar";
+import ChatConversationList from "@/components/app/ChatConversationList";
 
 interface Message {
   id: string;
@@ -419,7 +420,10 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="mx-auto flex h-[calc(100dvh-4.25rem)] w-full max-w-5xl overflow-x-hidden">
+    <div className="mx-auto flex h-[calc(100dvh-4.25rem)] w-full max-w-7xl overflow-x-hidden">
+      {/* Left sidebar — conversations list */}
+      <ChatConversationList currentSlug={personaSlug} />
+
       {/* Main chat area */}
       <div className="flex flex-1 flex-col">
         {/* Chat header */}
