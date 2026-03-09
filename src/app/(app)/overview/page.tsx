@@ -56,13 +56,17 @@ function MiniPersona({ persona, saved, onTap }: { persona: Persona; saved?: bool
       onClick={() => onTap?.(persona)}
       className="group flex shrink-0 flex-col items-center gap-2 text-left"
     >
-      <div className="relative h-28 w-28 overflow-hidden rounded-xl ring-2 ring-taupe/10 transition-all group-hover:ring-burgundy/40">
+      <div className="relative h-48 w-36 overflow-hidden rounded-xl ring-2 ring-taupe/10 transition-all group-hover:ring-burgundy/40">
         <Image
           src={persona.image}
           alt={persona.name}
           fill
           className="object-cover object-[center_20%]"
         />
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-2.5 pb-2.5 pt-8">
+          <p className="text-sm font-bold text-cream">{persona.name}</p>
+          <p className="text-[10px] text-taupe/60">{persona.archetype}</p>
+        </div>
         {saved && (
           <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-burgundy/90 shadow">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-cream">
@@ -70,10 +74,6 @@ function MiniPersona({ persona, saved, onTap }: { persona: Persona; saved?: bool
             </svg>
           </div>
         )}
-      </div>
-      <div className="text-center">
-        <p className="text-xs font-bold text-cream">{persona.name}</p>
-        <p className="text-[10px] text-taupe/40">{persona.archetype}</p>
       </div>
     </button>
   );
