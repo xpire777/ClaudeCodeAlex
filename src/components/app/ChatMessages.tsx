@@ -8,6 +8,8 @@ interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
+  imageUrl?: string;
+  imageLoading?: boolean;
 }
 
 export default function ChatMessages({
@@ -29,7 +31,13 @@ export default function ChatMessages({
     <div className="flex-1 overflow-y-auto px-4 py-4">
       <div className="flex flex-col gap-3">
         {messages.map((msg) => (
-          <ChatBubble key={msg.id} role={msg.role} content={msg.content} />
+          <ChatBubble
+            key={msg.id}
+            role={msg.role}
+            content={msg.content}
+            imageUrl={msg.imageUrl}
+            imageLoading={msg.imageLoading}
+          />
         ))}
 
         {streaming && streamText && (

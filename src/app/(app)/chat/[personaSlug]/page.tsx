@@ -12,6 +12,18 @@ interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
+  imageUrl?: string;
+  imageLoading?: boolean;
+}
+
+const PHOTO_TAG_REGEX = /\[SEND_PHOTO:\s*(.+?)\]/;
+
+function parsePhotoTag(text: string): { cleanText: string; photoPrompt: string | null } {
+  const match = text.match(PHOTO_TAG_REGEX);
+  if (!match) return { cleanText: text, photoPrompt: null };
+  const cleanText = text.replace(PHOTO_TAG_REGEX, "").trim();
+  const photoPrompt = match[1].trim();
+  return { cleanText, photoPrompt };
 }
 
 export default function ChatPage() {
@@ -69,6 +81,37 @@ export default function ChatPage() {
     if (followUpTimer.current) {
       clearTimeout(followUpTimer.current);
       followUpTimer.current = null;
+    }
+  }
+
+  async function generatePersonaImage(msgId: string, prompt: string) {
+    try {
+      const res = await fetch("/api/generate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ personaSlug, prompt }),
+      });
+
+      if (!res.ok) {
+        console.error("Image generation failed");
+        // Remove loading state
+        setMessages((prev) =>
+          prev.map((m) => (m.id === msgId ? { ...m, imageLoading: false } : m))
+        );
+        return;
+      }
+
+      const { imageUrl } = await res.json();
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === msgId ? { ...m, imageUrl, imageLoading: false } : m
+        )
+      );
+    } catch (err) {
+      console.error("Image generation error:", err);
+      setMessages((prev) =>
+        prev.map((m) => (m.id === msgId ? { ...m, imageLoading: false } : m))
+      );
     }
   }
 
@@ -200,13 +243,23 @@ export default function ChatPage() {
         const typingDelay = Math.max(1000, baseDelay + jitter);
         await new Promise((resolve) => setTimeout(resolve, typingDelay));
 
+        const rawContent = fullText.replace(/\n+/g, " ").trim();
+        const { cleanText, photoPrompt } = parsePhotoTag(rawContent);
+
+        const msgId = `assistant-${Date.now()}`;
         const assistantMsg: Message = {
-          id: `assistant-${Date.now()}`,
+          id: msgId,
           role: "assistant",
-          content: fullText.replace(/\n+/g, " ").trim(),
+          content: cleanText,
+          imageLoading: !!photoPrompt,
         };
         setMessages((prev) => [...prev, assistantMsg]);
         scheduleFollowUp();
+
+        // Generate image if persona wants to send a photo
+        if (photoPrompt) {
+          generatePersonaImage(msgId, photoPrompt);
+        }
       }
     } catch (err) {
       console.error("Send error:", err);
