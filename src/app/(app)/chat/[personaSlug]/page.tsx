@@ -40,6 +40,9 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(true);
   const followUpTimer = useRef<NodeJS.Timeout | null>(null);
   const followUpSent = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const pendingMessagesRef = useRef<string[]>([]);
+  const readDelayTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const loadHistory = useCallback(async () => {
     const supabase = createClient();
@@ -214,9 +217,13 @@ export default function ChatPage() {
     }
   }
 
-  // Clean up timer on unmount
+  // Clean up timers on unmount
   useEffect(() => {
-    return () => clearFollowUp();
+    return () => {
+      clearFollowUp();
+      if (readDelayTimerRef.current) clearTimeout(readDelayTimerRef.current);
+      if (abortControllerRef.current) abortControllerRef.current.abort();
+    };
   }, []);
 
   async function handleSend(message: string) {
@@ -226,18 +233,59 @@ export default function ChatPage() {
     const userMsg: Message = { id: tempId, role: "user", content: message };
     setMessages((prev) => [...prev, userMsg]);
 
-    // Random "reading" delay before typing indicator appears (1-4 seconds)
-    const readDelay = 1000 + Math.random() * 3000;
+    // If currently streaming/waiting, cancel the in-flight request and queue this message
+    if (streaming || readDelayTimerRef.current) {
+      // Abort any in-flight API request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+      // Cancel any pending read delay
+      if (readDelayTimerRef.current) {
+        clearTimeout(readDelayTimerRef.current);
+        readDelayTimerRef.current = null;
+      }
+      setStreaming(false);
+      setStreamText("");
+    }
+
+    // Store this message as pending — restart the "read delay" timer
+    pendingMessagesRef.current.push(message);
+
+    // Clear any existing read delay so we batch messages sent in quick succession
+    if (readDelayTimerRef.current) {
+      clearTimeout(readDelayTimerRef.current);
+    }
+
+    // Wait for user to stop typing (1.5s pause) then send all pending messages as one request
+    readDelayTimerRef.current = setTimeout(() => {
+      readDelayTimerRef.current = null;
+      const allMessages = pendingMessagesRef.current.join(" ");
+      pendingMessagesRef.current = [];
+      sendToApi(allMessages);
+    }, 1500);
+  }
+
+  async function sendToApi(message: string) {
+    // Random "reading" delay before typing indicator (0.5-2 seconds)
+    const readDelay = 500 + Math.random() * 1500;
     await new Promise((resolve) => setTimeout(resolve, readDelay));
+
+    // If new messages came in during the delay, abort — handleSend will restart
+    if (pendingMessagesRef.current.length > 0) return;
 
     setStreaming(true);
     setStreamText("");
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
 
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message, personaSlug }),
+        signal: controller.signal,
       });
 
       if (!res.ok) {
@@ -299,8 +347,13 @@ export default function ChatPage() {
         }
       }
     } catch (err) {
+      if ((err as Error).name === "AbortError") {
+        // Request was cancelled because user sent more messages — expected
+        return;
+      }
       console.error("Send error:", err);
     } finally {
+      abortControllerRef.current = null;
       setStreaming(false);
       setStreamText("");
     }
@@ -466,7 +519,7 @@ export default function ChatPage() {
         </div>
 
         {/* Input */}
-        <ChatInput onSend={handleSend} onSendImage={handleSendImage} disabled={streaming} />
+        <ChatInput onSend={handleSend} onSendImage={handleSendImage} disabled={false} />
       </div>
 
       {/* Desktop sidebar */}
