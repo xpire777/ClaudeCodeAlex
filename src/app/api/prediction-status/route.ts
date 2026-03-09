@@ -47,9 +47,13 @@ export async function GET(request: NextRequest) {
 
     if (prediction.status === "succeeded") {
       const output = prediction.output as string[];
-      const imageUrl = output?.[0];
-      if (imageUrl) {
-        return Response.json({ status: "succeeded", imageUrl });
+      const rawUrl = output?.[0];
+      if (rawUrl) {
+        // Return both the direct URL and a proxied version for mobile compatibility
+        return Response.json({
+          status: "succeeded",
+          imageUrl: `/api/image-proxy?url=${encodeURIComponent(rawUrl)}`,
+        });
       }
       return Response.json({ status: "failed", error: "No output" });
     }

@@ -94,7 +94,8 @@ export default function ChatBubble({
           <img
             src={imageUrl}
             alt="Photo"
-            className="h-auto w-full object-cover"
+            className="block min-h-[100px] w-full object-cover"
+            loading="eager"
           />
         </div>
       )}
