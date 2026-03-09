@@ -58,7 +58,7 @@ export default function ChatMessages({
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, streamText]);
+  }, [messages, streamText, streaming]);
 
   // Scroll to bottom when keyboard opens (visualViewport resize)
   useEffect(() => {
