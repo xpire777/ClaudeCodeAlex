@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function ChatSidebar({ persona }: { persona: Persona }) {
   return (
-    <div className="hidden w-72 shrink-0 border-l border-taupe/10 bg-gradient-to-b from-dark/90 to-dark lg:block">
+    <div className="hidden w-64 shrink-0 bg-dark/40 lg:block">
       <div className="flex flex-col items-center px-6 py-8">
         <PersonaAvatar src={persona.image} name={persona.name} size={96} />
         <h3 className="mt-4 text-base font-bold tracking-wide text-cream">
