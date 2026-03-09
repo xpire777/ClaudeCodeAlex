@@ -43,6 +43,7 @@ export default function ChatPage() {
   const abortControllerRef = useRef<AbortController | null>(null);
   const pendingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isBusyRef = useRef(false);
+  const safetyTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const loadHistory = useCallback(async () => {
     const supabase = createClient();
@@ -261,10 +262,41 @@ export default function ChatPage() {
   useEffect(() => {
     return () => {
       clearFollowUp();
+      clearSafetyTimer();
       if (pendingTimerRef.current) clearTimeout(pendingTimerRef.current);
       if (abortControllerRef.current) abortControllerRef.current.abort();
     };
   }, []);
+
+  // Safety net: if streaming is stuck for 30s, force-reset all state
+  function startSafetyTimer() {
+    clearSafetyTimer();
+    safetyTimerRef.current = setTimeout(() => {
+      console.warn("[chat] Safety timer fired — force-resetting stuck state");
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+      isBusyRef.current = false;
+      setStreaming(false);
+      setStreamText("");
+    }, 30000);
+  }
+
+  function clearSafetyTimer() {
+    if (safetyTimerRef.current) {
+      clearTimeout(safetyTimerRef.current);
+      safetyTimerRef.current = null;
+    }
+  }
+
+  function cancelableDelay(ms: number, signal: AbortSignal): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (signal.aborted) { reject(new DOMException("Aborted", "AbortError")); return; }
+      const timer = setTimeout(resolve, ms);
+      signal.addEventListener("abort", () => { clearTimeout(timer); reject(new DOMException("Aborted", "AbortError")); }, { once: true });
+    });
+  }
 
   async function handleSend(message: string) {
     clearFollowUp();
@@ -279,17 +311,18 @@ export default function ChatPage() {
       pendingTimerRef.current = null;
     }
 
-    // If an API request is in flight, abort it
+    // If an API request is in flight (or in a delay), abort it
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
-      isBusyRef.current = false;
-      setStreaming(false);
-      setStreamText("");
     }
+    // Always reset busy state when user sends a new message
+    isBusyRef.current = false;
+    clearSafetyTimer();
+    setStreaming(false);
+    setStreamText("");
 
     // Wait 1.5s for more messages, then send the API call
-    // The API will read the full history from the DB, so we just need to trigger it
     pendingTimerRef.current = setTimeout(() => {
       pendingTimerRef.current = null;
       sendToApi(message);
@@ -300,16 +333,18 @@ export default function ChatPage() {
     if (isBusyRef.current) return;
     isBusyRef.current = true;
 
-    // Random "reading" delay (0.5-2 seconds)
-    await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 1500));
-
-    setStreaming(true);
-    setStreamText("");
-
+    // Create abort controller immediately so it can be cancelled at any point
     const controller = new AbortController();
     abortControllerRef.current = controller;
+    startSafetyTimer();
 
     try {
+      // Random "reading" delay (0.5-2 seconds) — cancelable
+      await cancelableDelay(500 + Math.random() * 1500, controller.signal);
+
+      setStreaming(true);
+      setStreamText("");
+
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -350,12 +385,12 @@ export default function ChatPage() {
         }
       }
 
-      // Simulate typing delay, then show all at once
+      // Simulate typing delay — cancelable
       if (fullText) {
         const baseDelay = Math.max(1500, fullText.length * 50);
         const jitter = (Math.random() - 0.5) * 2000;
         const typingDelay = Math.max(1000, baseDelay + jitter);
-        await new Promise((resolve) => setTimeout(resolve, typingDelay));
+        await cancelableDelay(typingDelay, controller.signal);
 
         const rawContent = fullText.replace(/\n+/g, " ").trim();
         const { cleanText, photoPrompt } = parsePhotoTag(rawContent);
@@ -378,6 +413,7 @@ export default function ChatPage() {
       if ((err as Error).name === "AbortError") return;
       console.error("Send error:", err);
     } finally {
+      clearSafetyTimer();
       abortControllerRef.current = null;
       isBusyRef.current = false;
       setStreaming(false);
