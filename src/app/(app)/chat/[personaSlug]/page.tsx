@@ -66,18 +66,25 @@ export default function ChatPage() {
     if (conversation) {
       const { data: history } = await supabase
         .from("messages")
-        .select("id, role, content")
+        .select("id, role, content, image_url")
         .eq("conversation_id", conversation.id)
         .order("created_at", { ascending: true });
 
       if (history) {
         setMessages(
-          (history as Message[]).map((msg) => {
+          (history as (Message & { image_url?: string })[]).map((msg) => {
+            const base = { ...msg, imageUrl: msg.image_url || undefined };
             if (msg.role === "assistant") {
               const { cleanText } = parsePhotoTag(msg.content);
-              return { ...msg, content: cleanText };
+              return { ...base, content: cleanText };
             }
-            return msg;
+            // Restore user-sent images from [IMAGE: url] content
+            const imgMatch = msg.content?.match(/\[IMAGE:\s*(https?:\/\/[^\]]+)\]/);
+            if (imgMatch && msg.role === "user") {
+              const textPart = msg.content.replace(/\[IMAGE:\s*https?:\/\/[^\]]+\]/, "").trim();
+              return { ...base, content: textPart, imageUrl: imgMatch[1] };
+            }
+            return base;
           })
         );
       }
@@ -134,6 +141,39 @@ export default function ChatPage() {
               m.id === msgId ? { ...m, imageUrl: statusData.imageUrl, imageLoading: false } : m
             )
           );
+
+          // Persist image URL to the most recent assistant message in DB
+          try {
+            const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              const { data: conv } = await supabase
+                .from("conversations")
+                .select("id")
+                .eq("user_id", user.id)
+                .eq("persona_slug", personaSlug)
+                .single();
+              if (conv) {
+                const { data: lastMsg } = await supabase
+                  .from("messages")
+                  .select("id")
+                  .eq("conversation_id", conv.id)
+                  .eq("role", "assistant")
+                  .order("created_at", { ascending: false })
+                  .limit(1)
+                  .single();
+                if (lastMsg) {
+                  await supabase
+                    .from("messages")
+                    .update({ image_url: statusData.imageUrl })
+                    .eq("id", lastMsg.id);
+                }
+              }
+            }
+          } catch {
+            // Non-critical — image still shows in current session
+          }
+
           return;
         }
 
