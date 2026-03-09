@@ -145,6 +145,11 @@ export default function ChatPage() {
     const tempId = `temp-${Date.now()}`;
     const userMsg: Message = { id: tempId, role: "user", content: message };
     setMessages((prev) => [...prev, userMsg]);
+
+    // Random "reading" delay before typing indicator appears (1-4 seconds)
+    const readDelay = 1000 + Math.random() * 3000;
+    await new Promise((resolve) => setTimeout(resolve, readDelay));
+
     setStreaming(true);
     setStreamText("");
 
@@ -188,9 +193,11 @@ export default function ChatPage() {
         }
       }
 
-      // Simulate typing delay based on response length, then show all at once
+      // Simulate typing delay with randomness, then show all at once
       if (fullText) {
-        const typingDelay = Math.max(1500, fullText.length * 50);
+        const baseDelay = Math.max(1500, fullText.length * 50);
+        const jitter = (Math.random() - 0.5) * 2000; // +/- 1 second
+        const typingDelay = Math.max(1000, baseDelay + jitter);
         await new Promise((resolve) => setTimeout(resolve, typingDelay));
 
         const assistantMsg: Message = {
