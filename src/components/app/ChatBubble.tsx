@@ -23,6 +23,7 @@ export default function ChatBubble({
   const hasText = content.trim().length > 0;
   const [reaction, setReaction] = useState<string | null>(null);
   const [showReactions, setShowReactions] = useState(false);
+  const [lightbox, setLightbox] = useState(false);
 
   return (
     <div className={`flex flex-col gap-1 ${isUser ? "items-end" : "items-start"}`}>
@@ -84,20 +85,46 @@ export default function ChatBubble({
       )}
 
       {imageUrl && (
-        <div
-          className={`max-w-[70%] overflow-hidden rounded-2xl ${
-            isUser ? "rounded-br-md" : "rounded-bl-md"
-          }`}
-          onDoubleClick={() => setShowReactions(!showReactions)}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={imageUrl}
-            alt="Photo"
-            className="block min-h-[100px] w-full object-cover"
-            loading="eager"
-          />
-        </div>
+        <>
+          <button
+            className={`max-w-[70%] overflow-hidden rounded-2xl ${
+              isUser ? "rounded-br-md" : "rounded-bl-md"
+            }`}
+            onClick={() => setLightbox(true)}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imageUrl}
+              alt="Photo"
+              className="block min-h-[100px] w-full object-cover"
+              loading="eager"
+            />
+          </button>
+
+          {lightbox && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+              onClick={() => setLightbox(false)}
+            >
+              <button
+                onClick={() => setLightbox(false)}
+                className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-dark/70 text-taupe transition-colors hover:text-cream"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imageUrl}
+                alt="Photo"
+                className="max-h-[85vh] max-w-full rounded-lg object-contain"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          )}
+        </>
       )}
 
       {/* Timestamp + Read receipt */}
