@@ -29,7 +29,7 @@ export default function ChatMessages({
 
   return (
     <div className="flex-1 overflow-y-auto px-4 py-4">
-      <div className="flex flex-col gap-3">
+      <div className="flex min-h-full flex-col justify-end gap-3">
         {messages.map((msg) => (
           <ChatBubble
             key={msg.id}
