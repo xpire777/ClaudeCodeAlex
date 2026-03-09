@@ -7,6 +7,7 @@ import { getPersonaBySlug } from "@/data/personas";
 import PersonaAvatar from "@/components/app/PersonaAvatar";
 import ChatMessages from "@/components/app/ChatMessages";
 import ChatInput from "@/components/app/ChatInput";
+import ChatSidebar from "@/components/app/ChatSidebar";
 
 interface Message {
   id: string;
@@ -383,45 +384,54 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="mx-auto flex h-[calc(100dvh-4.25rem)] w-full max-w-lg flex-col overflow-x-hidden">
-      {/* Chat header */}
-      <div className="flex items-center gap-3 border-b border-taupe/10 px-4 py-3">
-        <button onClick={() => router.back()} className="text-taupe/60">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <PersonaAvatar src={persona.image} name={persona.name} size={48} />
-        <div>
-          <p className="text-sm font-bold">{persona.name}</p>
-          <p className="text-[10px] text-taupe/50">Online now</p>
+    <div className="mx-auto flex h-[calc(100dvh-4.25rem)] w-full max-w-5xl overflow-x-hidden">
+      {/* Main chat area */}
+      <div className="flex flex-1 flex-col">
+        {/* Chat header */}
+        <div className="flex items-center gap-3 border-b border-taupe/10 px-4 py-3">
+          <button onClick={() => router.back()} className="text-taupe/60">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <PersonaAvatar src={persona.image} name={persona.name} size={48} />
+          <div>
+            <p className="text-sm font-bold">{persona.name}</p>
+            <p className="text-[10px] text-taupe/50">Online now</p>
+          </div>
         </div>
+
+        {/* Messages with subtle background */}
+        <div className="relative flex-1">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-surface/0 via-burgundy/[0.02] to-surface/0" />
+          {loading ? (
+            <div className="flex h-full items-center justify-center">
+              <p className="text-sm text-taupe/50">Loading...</p>
+            </div>
+          ) : messages.length === 0 && !streaming ? (
+            <div className="flex h-full flex-col items-center justify-center gap-2 px-8">
+              <PersonaAvatar src={persona.image} name={persona.name} size={64} />
+              <p className="mt-2 text-center text-sm font-bold">{persona.name}</p>
+              <p className="text-center text-xs text-taupe/60">{persona.tagline}</p>
+              <p className="mt-4 text-center text-xs text-taupe/40">
+                Say hi to start the conversation
+              </p>
+            </div>
+          ) : (
+            <ChatMessages
+              messages={messages}
+              streaming={streaming}
+              streamText={streamText}
+            />
+          )}
+        </div>
+
+        {/* Input */}
+        <ChatInput onSend={handleSend} onSendImage={handleSendImage} disabled={streaming} />
       </div>
 
-      {/* Messages */}
-      {loading ? (
-        <div className="flex flex-1 items-center justify-center">
-          <p className="text-sm text-taupe/50">Loading...</p>
-        </div>
-      ) : messages.length === 0 && !streaming ? (
-        <div className="flex flex-1 flex-col items-center justify-center gap-2 px-8">
-          <PersonaAvatar src={persona.image} name={persona.name} size={64} />
-          <p className="mt-2 text-center text-sm font-bold">{persona.name}</p>
-          <p className="text-center text-xs text-taupe/60">{persona.tagline}</p>
-          <p className="mt-4 text-center text-xs text-taupe/40">
-            Say hi to start the conversation
-          </p>
-        </div>
-      ) : (
-        <ChatMessages
-          messages={messages}
-          streaming={streaming}
-          streamText={streamText}
-        />
-      )}
-
-      {/* Input */}
-      <ChatInput onSend={handleSend} onSendImage={handleSendImage} disabled={streaming} />
+      {/* Desktop sidebar */}
+      <ChatSidebar persona={persona} />
     </div>
   );
 }
