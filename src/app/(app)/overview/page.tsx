@@ -63,9 +63,9 @@ function MiniPersona({ persona, saved, onTap }: { persona: Persona; saved?: bool
           fill
           className="object-cover object-[center_20%]"
         />
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-2.5 pb-2.5 pt-8">
-          <p className="text-sm font-bold text-cream">{persona.name}, {persona.age}</p>
-          <p className="text-[10px] text-cream/50">{persona.city}</p>
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-2.5 pb-2.5 pt-12">
+          <p className="text-sm font-bold text-white drop-shadow-lg">{persona.name}, {persona.age}</p>
+          <p className="text-[10px] text-white/70 drop-shadow">{persona.city}</p>
         </div>
         {saved && (
           <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-burgundy/90 shadow">
