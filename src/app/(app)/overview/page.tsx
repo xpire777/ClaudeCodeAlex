@@ -218,19 +218,19 @@ export default function OverviewPage() {
   return (
     <div className="flex flex-1 flex-col p-4 md:p-6">
       {/* Bento Grid */}
-      <div className="grid flex-1 auto-rows-min grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
-        {/* New Personas — spans 2 cols, top-left */}
-        <BentoTile className="md:col-span-2">
+      <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-3 md:grid-rows-[1fr_1fr_auto_auto] md:gap-5">
+        {/* New Personas — spans 2 cols + 2 rows, vertical scroll */}
+        <BentoTile className="md:col-span-2 md:row-span-2 flex flex-col overflow-hidden">
           <SectionLabel>New Personas</SectionLabel>
-          <div className="scrollbar-hide -mx-1 flex gap-5 overflow-x-auto px-1 py-1 md:flex-wrap md:overflow-visible">
+          <div className="scrollbar-hide -mx-1 flex min-h-0 flex-1 gap-5 overflow-x-auto px-1 py-1 md:flex-wrap md:content-start md:overflow-y-auto md:overflow-x-hidden md:-mr-2 md:pr-2">
             {personas.map((persona) => (
               <MiniPersona key={persona.slug} persona={persona} saved={savedSlugs.includes(persona.slug)} onTap={setLightboxPersona} />
             ))}
           </div>
         </BentoTile>
 
-        {/* Ongoing Chats — right column, spans 2 rows */}
-        <BentoTile className="md:row-span-2 flex flex-col">
+        {/* Ongoing Chats — right column */}
+        <BentoTile className="flex flex-col">
           <div className="mb-3 flex items-center justify-between">
             <SectionLabel>Chats</SectionLabel>
             {conversations.length > 0 && (
@@ -335,12 +335,12 @@ export default function OverviewPage() {
           </button>
         </BentoTile>
 
-        {/* Suggested For You — spans 2 cols */}
+        {/* Suggested For You */}
         <BentoTile className="md:col-span-2">
           <SectionLabel>Suggested For You</SectionLabel>
           <div className="scrollbar-hide -mx-1 flex gap-5 overflow-x-auto px-1 py-1">
             {suggestedFinal.map((persona) => (
-              <MiniPersona key={persona.slug} persona={persona} saved={savedSlugs.includes(persona.slug)} />
+              <MiniPersona key={persona.slug} persona={persona} saved={savedSlugs.includes(persona.slug)} onTap={setLightboxPersona} />
             ))}
           </div>
         </BentoTile>
