@@ -38,6 +38,7 @@ export default function ChatPage() {
   const [streaming, setStreaming] = useState(false);
   const [streamText, setStreamText] = useState("");
   const [loading, setLoading] = useState(true);
+  const [confirmingErase, setConfirmingErase] = useState(false);
   const followUpTimer = useRef<NodeJS.Timeout | null>(null);
   const followUpSent = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -559,6 +560,42 @@ export default function ChatPage() {
     }
   }
 
+  async function eraseConversation() {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: conversation } = await supabase
+      .from("conversations")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("persona_slug", personaSlug)
+      .single();
+
+    if (conversation) {
+      await supabase.from("messages").delete().eq("conversation_id", conversation.id);
+      await supabase.from("conversations").delete().eq("id", conversation.id);
+    }
+
+    // Reset all local state
+    setMessages([]);
+    setConfirmingErase(false);
+    clearFollowUp();
+    followUpSent.current = false;
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    if (pendingTimerRef.current) {
+      clearTimeout(pendingTimerRef.current);
+      pendingTimerRef.current = null;
+    }
+    isBusyRef.current = false;
+    clearSafetyTimer();
+    setStreaming(false);
+    setStreamText("");
+  }
+
   if (!persona) {
     return (
       <div className="flex flex-1 items-center justify-center">
@@ -585,6 +622,32 @@ export default function ChatPage() {
           <div>
             <p className="text-sm font-bold">{persona.name}</p>
             <p className="text-[10px] text-taupe/50">Online now</p>
+          </div>
+          <div className="ml-auto">
+            {confirmingErase ? (
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-taupe/60">Are you sure?</span>
+                <button
+                  onClick={eraseConversation}
+                  className="rounded-full bg-red-600/80 px-3 py-1 text-[10px] font-bold tracking-wider text-cream transition-opacity hover:opacity-90"
+                >
+                  Erase
+                </button>
+                <button
+                  onClick={() => setConfirmingErase(false)}
+                  className="rounded-full border border-taupe/20 px-3 py-1 text-[10px] font-bold tracking-wider text-taupe transition-colors hover:text-cream"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirmingErase(true)}
+                className="rounded-full border border-taupe/10 px-3 py-1.5 text-[10px] font-bold tracking-wider text-taupe/50 transition-colors hover:border-red-500/30 hover:text-red-400"
+              >
+                Erase All
+              </button>
+            )}
           </div>
         </div>
 
