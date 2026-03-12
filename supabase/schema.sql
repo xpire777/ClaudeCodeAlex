@@ -93,3 +93,45 @@ create policy "Users can create messages in own conversations"
       and conversations.user_id = auth.uid()
     )
   );
+
+create policy "Users can delete messages in own conversations"
+  on public.messages for delete
+  using (
+    exists (
+      select 1 from public.conversations
+      where conversations.id = messages.conversation_id
+      and conversations.user_id = auth.uid()
+    )
+  );
+
+create policy "Users can delete own conversations"
+  on public.conversations for delete
+  using (auth.uid() = user_id);
+
+-- 4. Persona memories table (hierarchical fact storage)
+create table if not exists public.persona_memories (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users on delete cascade not null,
+  persona_slug text not null,
+  memories jsonb not null default '[]'::jsonb,
+  updated_at timestamptz default now(),
+  unique (user_id, persona_slug)
+);
+
+alter table public.persona_memories enable row level security;
+
+create policy "Users can view own persona memories"
+  on public.persona_memories for select
+  using (auth.uid() = user_id);
+
+create policy "Users can create own persona memories"
+  on public.persona_memories for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own persona memories"
+  on public.persona_memories for update
+  using (auth.uid() = user_id);
+
+create policy "Users can delete own persona memories"
+  on public.persona_memories for delete
+  using (auth.uid() = user_id);

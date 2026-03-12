@@ -5,6 +5,9 @@ import { anthropic } from "@/lib/anthropic";
 import { getPersonaBySlug } from "@/data/personas";
 
 const MAX_CONTEXT_MESSAGES = 50;
+const MAX_MEMORY_FACTS = 100;
+
+type MemoryCategory = { category: string; facts: string[] };
 
 async function getSupabase() {
   const cookieStore = await cookies();
@@ -139,10 +142,29 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Fetch stored memories for this user+persona
+    const { data: memoryRow } = await supabase
+      .from("persona_memories")
+      .select("memories")
+      .eq("user_id", user.id)
+      .eq("persona_slug", personaSlug)
+      .single();
+
+    const storedMemories: MemoryCategory[] = (memoryRow?.memories as MemoryCategory[]) || [];
+
+    // Build memory context to inject into system prompt
+    let memoryContext = "";
+    if (storedMemories.length > 0) {
+      const lines = storedMemories.map(
+        (cat) => `${cat.category}: ${cat.facts.join("; ")}`
+      );
+      memoryContext = `\n\nTHINGS YOU REMEMBER ABOUT THIS PERSON:\n${lines.join("\n")}\nUse this knowledge naturally — don't list it back or make it obvious you're recalling facts. Just let it inform how you talk to them, like a real friend would.`;
+    }
+
     // For follow-ups, add instruction to send a natural follow-up question
     const systemPrompt = followUp
-      ? persona.systemPrompt + "\n\nThe user hasn't responded in a while. Send a casual follow-up text like a real person would — ask a question, share a random thought, or bring up something from earlier in the conversation. Keep it natural and short, like you just thought of something."
-      : persona.systemPrompt;
+      ? persona.systemPrompt + memoryContext + "\n\nThe user hasn't responded in a while. Send a casual follow-up text like a real person would — ask a question, share a random thought, or bring up something from earlier in the conversation. Keep it natural and short, like you just thought of something."
+      : persona.systemPrompt + memoryContext;
 
     // For follow-ups, add a nudge as the last user message
     const apiMessages = followUp
@@ -195,10 +217,65 @@ export async function POST(request: NextRequest) {
             }
           }
 
-          // Save assistant message after streaming completes (strip photo tags)
+          // Parse and save any memory tags from the response
+          const newMemories: { category: string; fact: string }[] = [];
+          let memMatch;
+          const memRegex = /\[MEMORY:\s*([^|]+?)\s*\|\s*(.+?)\]/g;
+          while ((memMatch = memRegex.exec(fullResponse)) !== null) {
+            newMemories.push({
+              category: memMatch[1].trim(),
+              fact: memMatch[2].trim(),
+            });
+          }
+
+          if (newMemories.length > 0) {
+            // Merge new facts into existing memory hierarchy
+            const currentMemories: MemoryCategory[] = [...storedMemories];
+            let totalFacts = currentMemories.reduce((sum, cat) => sum + cat.facts.length, 0);
+
+            for (const { category, fact } of newMemories) {
+              if (totalFacts >= MAX_MEMORY_FACTS) break;
+
+              const existing = currentMemories.find(
+                (cat) => cat.category.toLowerCase() === category.toLowerCase()
+              );
+
+              if (existing) {
+                // Skip duplicate facts
+                const isDuplicate = existing.facts.some(
+                  (f) => f.toLowerCase() === fact.toLowerCase()
+                );
+                if (!isDuplicate) {
+                  existing.facts.push(fact);
+                  totalFacts++;
+                }
+              } else {
+                currentMemories.push({ category, facts: [fact] });
+                totalFacts++;
+              }
+            }
+
+            // Upsert the memory row
+            await supabase
+              .from("persona_memories")
+              .upsert(
+                {
+                  user_id: user.id,
+                  persona_slug: personaSlug,
+                  memories: currentMemories,
+                  updated_at: new Date().toISOString(),
+                },
+                { onConflict: "user_id,persona_slug" }
+              );
+          }
+
+          // Save assistant message after streaming completes
+          // Replace SEND_PHOTO with a context marker so the persona remembers it sent a photo
+          // Strip memory tags entirely (they're persisted separately)
           const cleanContent = fullResponse
             .replace(/\n+/g, " ")
-            .replace(/\[SEND_PHOTO:\s*.+?\]/g, "")
+            .replace(/\[SEND_PHOTO:\s*(.+?)\]/g, "[You sent a photo: $1]")
+            .replace(/\[MEMORY:\s*[^|]+?\s*\|\s*.+?\]/g, "")
             .trim();
           if (cleanContent) {
             await supabase.from("messages").insert({
