@@ -86,13 +86,15 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Get conversation history for context
-    const { data: history } = await supabase
+    // Get the most recent messages for context (fetch descending, then reverse to chronological)
+    const { data: historyDesc } = await supabase
       .from("messages")
       .select("role, content")
       .eq("conversation_id", conversation.id)
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
       .limit(MAX_CONTEXT_MESSAGES);
+
+    const history = historyDesc ? [...historyDesc].reverse() : [];
 
     // Build messages array, converting [IMAGE: url] tags to vision content
     type TextBlock = { type: "text"; text: string };
@@ -101,7 +103,7 @@ export async function POST(request: NextRequest) {
     type ApiMessage = { role: "user" | "assistant"; content: string | ContentBlock[] };
 
     // Filter out empty messages from history (corrupted data)
-    const validHistory = (history || []).filter((msg) => msg.content && msg.content.trim().length > 0);
+    const validHistory = history.filter((msg) => msg.content && msg.content.trim().length > 0);
 
     const rawMessages: ApiMessage[] = validHistory.map((msg) => {
       const role = msg.role as "user" | "assistant";

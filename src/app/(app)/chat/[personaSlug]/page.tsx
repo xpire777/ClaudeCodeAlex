@@ -207,6 +207,12 @@ export default function ChatPage() {
   }
 
   async function sendFollowUp() {
+    if (isBusyRef.current) return; // Don't send follow-up if already processing
+    isBusyRef.current = true;
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    startSafetyTimer();
     setStreaming(true);
     setStreamText("");
 
@@ -215,6 +221,7 @@ export default function ChatPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ personaSlug, followUp: true }),
+        signal: controller.signal,
       });
 
       if (!res.ok) return;
@@ -243,7 +250,7 @@ export default function ChatPage() {
 
       if (fullText) {
         const typingDelay = Math.max(1500, fullText.length * 50);
-        await new Promise((resolve) => setTimeout(resolve, typingDelay));
+        await cancelableDelay(typingDelay, controller.signal);
         setMessages((prev) => [...prev, {
           id: `assistant-${Date.now()}`,
           role: "assistant",
@@ -251,8 +258,12 @@ export default function ChatPage() {
         }]);
       }
     } catch (err) {
+      if ((err as Error).name === "AbortError") return;
       console.error("Follow-up error:", err);
     } finally {
+      clearSafetyTimer();
+      abortControllerRef.current = null;
+      isBusyRef.current = false;
       setStreaming(false);
       setStreamText("");
     }
@@ -438,10 +449,28 @@ export default function ChatPage() {
     };
     setMessages((prev) => [...prev, userMsg]);
 
+    // Cancel any in-flight work
+    if (pendingTimerRef.current) {
+      clearTimeout(pendingTimerRef.current);
+      pendingTimerRef.current = null;
+    }
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    isBusyRef.current = false;
+    clearSafetyTimer();
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    isBusyRef.current = true;
+    startSafetyTimer();
+
     try {
       const uploadRes = await fetch("/api/upload-image", {
         method: "POST",
         body: formData,
+        signal: controller.signal,
       });
 
       if (!uploadRes.ok) {
@@ -456,9 +485,8 @@ export default function ChatPage() {
         prev.map((m) => (m.id === tempId ? { ...m, imageUrl } : m))
       );
 
-      // Random "reading" delay
-      const readDelay = 1000 + Math.random() * 3000;
-      await new Promise((resolve) => setTimeout(resolve, readDelay));
+      // Random "reading" delay — cancelable
+      await cancelableDelay(1000 + Math.random() * 3000, controller.signal);
 
       setStreaming(true);
       setStreamText("");
@@ -468,6 +496,7 @@ export default function ChatPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ personaSlug, imageUrl }),
+        signal: controller.signal,
       });
 
       if (!res.ok) throw new Error("Failed to get response");
@@ -498,7 +527,7 @@ export default function ChatPage() {
         const baseDelay = Math.max(1500, fullText.length * 50);
         const jitter = (Math.random() - 0.5) * 2000;
         const typingDelay = Math.max(1000, baseDelay + jitter);
-        await new Promise((resolve) => setTimeout(resolve, typingDelay));
+        await cancelableDelay(typingDelay, controller.signal);
 
         const rawContent = fullText.replace(/\n+/g, " ").trim();
         const { cleanText, photoPrompt } = parsePhotoTag(rawContent);
@@ -519,8 +548,12 @@ export default function ChatPage() {
         }
       }
     } catch (err) {
+      if ((err as Error).name === "AbortError") return;
       console.error("Image send error:", err);
     } finally {
+      clearSafetyTimer();
+      abortControllerRef.current = null;
+      isBusyRef.current = false;
       setStreaming(false);
       setStreamText("");
     }
