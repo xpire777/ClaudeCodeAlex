@@ -66,6 +66,14 @@ export async function POST(request: NextRequest) {
       ? `a photo of ${triggerWord}, ${prompt}, ${realism}`
       : `a casual selfie photo of ${triggerWord}, natural lighting, ${realism}`;
 
+    if (!process.env.COMFY_DEPLOY_API_KEY) {
+      console.error("[generate-image] COMFY_DEPLOY_API_KEY is not set!");
+      return Response.json(
+        { error: "Server misconfiguration: missing API key" },
+        { status: 500 }
+      );
+    }
+
     console.log("[generate-image] Queuing ComfyDeploy run for:", personaSlug);
     console.log("[generate-image] Prompt:", imagePrompt);
 
@@ -75,9 +83,10 @@ export async function POST(request: NextRequest) {
 
     return Response.json({ predictionId: run_id });
   } catch (err) {
-    console.error("[generate-image] Error:", err);
+    console.error("[generate-image] Error:", err instanceof Error ? err.message : err);
+    console.error("[generate-image] Stack:", err instanceof Error ? err.stack : "no stack");
     return Response.json(
-      { error: "Failed to start image generation" },
+      { error: `Failed to start image generation: ${err instanceof Error ? err.message : "unknown"}` },
       { status: 500 }
     );
   }
