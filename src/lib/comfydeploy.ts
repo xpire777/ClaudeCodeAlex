@@ -1,4 +1,4 @@
-const COMFY_DEPLOY_API_KEY = (process.env.COMFY_DEPLOY_API_KEY || "").trim();
+const COMFY_DEPLOY_API_KEY = (process.env.COMFY_DEPLOY_API_KEY || "").replace(/\s+/g, "");
 const COMFY_DEPLOY_BASE_URL = "https://api.comfydeploy.com/api";
 
 // Map persona slugs to their ComfyDeploy deployment IDs
