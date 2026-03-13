@@ -61,10 +61,10 @@ export async function POST(request: NextRequest) {
     }
 
     const triggerWord = PERSONA_TRIGGER_WORDS[personaSlug] || personaSlug.toUpperCase();
-    const quality = "sharp focus, high resolution, professional photography, correct colors, vivid, well-lit, detailed face, clear skin texture, photorealistic, 8k";
+    const quality = "sharp focus, high resolution, neutral white balance, balanced exposure, cool natural daylight, detailed face, clear eyes, crisp details, photorealistic, shot on iPhone 15 Pro";
     const imagePrompt = prompt
       ? `a photo of ${triggerWord}, ${prompt}, ${quality}`
-      : `a casual selfie photo of ${triggerWord}, natural lighting, warm tones, ${quality}`;
+      : `a casual selfie photo of ${triggerWord}, bright natural daylight, ${quality}`;
 
     if (!process.env.COMFY_DEPLOY_API_KEY) {
       console.error("[generate-image] COMFY_DEPLOY_API_KEY is not set!");
