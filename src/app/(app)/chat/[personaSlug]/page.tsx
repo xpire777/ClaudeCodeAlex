@@ -152,36 +152,23 @@ export default function ChatPage() {
             )
           );
 
-          // Persist image URL to the most recent assistant message in DB
+          // Persist image to Supabase Storage for permanent access
           try {
-            const supabase = createClient();
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-              const { data: conv } = await supabase
-                .from("conversations")
-                .select("id")
-                .eq("user_id", user.id)
-                .eq("persona_slug", personaSlug)
-                .single();
-              if (conv) {
-                const { data: lastMsg } = await supabase
-                  .from("messages")
-                  .select("id")
-                  .eq("conversation_id", conv.id)
-                  .eq("role", "assistant")
-                  .order("created_at", { ascending: false })
-                  .limit(1)
-                  .single();
-                if (lastMsg) {
-                  await supabase
-                    .from("messages")
-                    .update({ image_url: statusData.imageUrl })
-                    .eq("id", lastMsg.id);
-                }
-              }
+            const persistRes = await fetch("/api/persist-image", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ imageUrl: statusData.imageUrl, messageId: msgId }),
+            });
+            if (persistRes.ok) {
+              const { permanentUrl } = await persistRes.json();
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === msgId ? { ...m, imageUrl: permanentUrl } : m
+                )
+              );
             }
           } catch {
-            // Non-critical — image still shows in current session
+            // Non-critical — image still shows in current session via proxy
           }
 
           return;
