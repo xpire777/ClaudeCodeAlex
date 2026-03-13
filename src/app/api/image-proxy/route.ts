@@ -18,13 +18,17 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    console.log("[image-proxy] Fetching:", url);
     const imageRes = await fetch(url);
     if (!imageRes.ok) {
+      console.error("[image-proxy] Fetch failed:", imageRes.status, imageRes.statusText);
       return new Response("Failed to fetch image", { status: 502 });
     }
 
     const contentType = imageRes.headers.get("content-type") || "image/webp";
     const imageBuffer = await imageRes.arrayBuffer();
+    const sizeMB = (imageBuffer.byteLength / (1024 * 1024)).toFixed(2);
+    console.log(`[image-proxy] Image size: ${imageBuffer.byteLength} bytes (${sizeMB} MB), type: ${contentType}`);
 
     return new Response(imageBuffer, {
       headers: {
