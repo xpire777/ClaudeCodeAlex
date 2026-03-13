@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     }
 
     const triggerWord = PERSONA_TRIGGER_WORDS[personaSlug] || personaSlug.toUpperCase();
-    const quality = "iphone photo, casual, candid, natural skin, no makeup filter, slightly grainy, real person, unedited";
+    const quality = "raw iphone photo, amateur, imperfect skin with pores and freckles, slight film grain, warm indoor lighting, casual snapshot, not a professional photo, unretouched, real life";
     const imagePrompt = prompt
       ? `a photo of ${triggerWord}, ${prompt}, ${quality}`
       : `a casual selfie photo of ${triggerWord}, natural daylight, ${quality}`;
