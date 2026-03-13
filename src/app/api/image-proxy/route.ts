@@ -7,8 +7,13 @@ export async function GET(request: NextRequest) {
     return new Response("Missing url parameter", { status: 400 });
   }
 
-  // Only allow Replicate delivery URLs
-  if (!url.includes("replicate.delivery") && !url.includes("pbxt.replicate.delivery")) {
+  // Only allow known image delivery URLs
+  const allowedHosts = [
+    "replicate.delivery",
+    "pbxt.replicate.delivery",
+    "comfy-deploy-output.s3",
+  ];
+  if (!allowedHosts.some((host) => url.includes(host))) {
     return new Response("Invalid image URL", { status: 403 });
   }
 
