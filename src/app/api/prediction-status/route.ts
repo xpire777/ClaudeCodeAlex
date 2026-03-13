@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
-import { replicate } from "@/lib/replicate";
+import { getComfyRunStatus } from "@/lib/comfydeploy";
 
 async function getSupabase() {
   const cookieStore = await cookies();
@@ -38,35 +38,34 @@ export async function GET(request: NextRequest) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const predictionId = request.nextUrl.searchParams.get("id");
-    if (!predictionId) {
-      return Response.json({ error: "Missing prediction ID" }, { status: 400 });
+    const runId = request.nextUrl.searchParams.get("id");
+    if (!runId) {
+      return Response.json({ error: "Missing run ID" }, { status: 400 });
     }
 
-    const prediction = await replicate.predictions.get(predictionId);
+    const run = await getComfyRunStatus(runId);
 
-    if (prediction.status === "succeeded") {
-      const output = prediction.output as string[];
-      const rawUrl = output?.[0];
-      if (rawUrl) {
-        // Return both the direct URL and a proxied version for mobile compatibility
+    if (run.status === "success") {
+      // ComfyDeploy returns outputs as an array of node outputs
+      const imageUrl = run.outputs?.[0]?.images?.[0]?.url;
+      if (imageUrl) {
         return Response.json({
           status: "succeeded",
-          imageUrl: `/api/image-proxy?url=${encodeURIComponent(rawUrl)}`,
+          imageUrl: `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`,
         });
       }
-      return Response.json({ status: "failed", error: "No output" });
+      return Response.json({ status: "failed", error: "No output image" });
     }
 
-    if (prediction.status === "failed" || prediction.status === "canceled") {
+    if (run.status === "failed" || run.status === "cancelled") {
       return Response.json({
         status: "failed",
-        error: prediction.error || "Generation failed",
+        error: "Generation failed",
       });
     }
 
-    // Still processing
-    return Response.json({ status: prediction.status });
+    // Still processing (queued, running, etc.)
+    return Response.json({ status: run.status });
   } catch (err) {
     console.error("[prediction-status] Error:", err);
     return Response.json(
