@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     }
 
     const triggerWord = PERSONA_TRIGGER_WORDS[personaSlug] || personaSlug.toUpperCase();
-    const quality = "sharp focus, high resolution, neutral white balance, balanced exposure, cool natural daylight, detailed face, clear eyes, crisp details, photorealistic, shot on iPhone 15 Pro";
+    const quality = "sharp focus, high resolution, 8k uhd, dslr quality, neutral white balance, balanced exposure, cool natural daylight, detailed face, clear eyes, crisp details, photorealistic, shot on Canon EOS R5, 85mm lens, shallow depth of field, ultra detailed skin texture";
     const imagePrompt = prompt
       ? `a photo of ${triggerWord}, ${prompt}, ${quality}`
       : `a casual selfie photo of ${triggerWord}, bright natural daylight, ${quality}`;
