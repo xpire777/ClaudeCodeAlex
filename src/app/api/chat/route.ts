@@ -193,7 +193,7 @@ export async function POST(request: NextRequest) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const stream = anthropic.messages.stream({
       model: "claude-sonnet-4-20250514",
-      max_tokens: 300,
+      max_tokens: 500,
       temperature: 1.0,
       system: finalSystem,
       messages: apiMessages as any,
