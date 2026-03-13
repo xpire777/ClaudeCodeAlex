@@ -35,6 +35,7 @@ export async function queueComfyRun(deploymentId: string, prompt: string) {
 export async function getComfyRunStatus(runId: string) {
   const res = await fetch(`${COMFY_DEPLOY_BASE_URL}/run/${runId}`, {
     headers: {
+      "Content-Type": "application/json",
       Authorization: `Bearer ${COMFY_DEPLOY_API_KEY}`,
     },
   });
