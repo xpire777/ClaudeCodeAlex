@@ -66,6 +66,7 @@ create table if not exists public.messages (
   conversation_id uuid references public.conversations on delete cascade not null,
   role text not null check (role in ('user', 'assistant')),
   content text not null,
+  image_url text,
   created_at timestamptz default now()
 );
 
