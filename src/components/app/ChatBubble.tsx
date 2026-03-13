@@ -132,7 +132,7 @@ export default function ChatBubble({
                   src={imageUrl}
                   alt="Photo"
                   className="max-h-[85vh] rounded-lg object-contain"
-                  style={{ maxWidth: "min(100%, 1024px)" }}
+                  style={{ maxWidth: "min(100%, 1536px)" }}
                 />
               </div>
             </div>
