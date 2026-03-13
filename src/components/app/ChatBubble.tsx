@@ -98,7 +98,7 @@ export default function ChatBubble({
       {imageUrl && (
         <>
           <button
-            className={`max-w-[70%] overflow-hidden rounded-2xl ${
+            className={`max-w-[50%] overflow-hidden rounded-2xl ${
               isUser ? "rounded-br-md" : "rounded-bl-md"
             }`}
             onClick={() => setLightbox(true)}
