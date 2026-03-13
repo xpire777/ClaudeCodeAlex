@@ -19,20 +19,21 @@ interface Message {
 }
 
 const PHOTO_TAG_REGEX = /\[SEND_PHOTO:\s*(.+?)\]/;
+const PHOTO_ALT_REGEX = /\[You sent a photo:\s*(.+?)\]/;
 const MEMORY_TAG_REGEX = /\[MEMORY:\s*[^|]+?\s*\|\s*.+?\]/g;
 const PHOTO_CONTEXT_REGEX = /\[You sent a photo:\s*.+?\]/g;
 
 function parsePhotoTag(text: string): { cleanText: string; photoPrompt: string | null } {
-  const match = text.match(PHOTO_TAG_REGEX);
+  const match = text.match(PHOTO_TAG_REGEX) || text.match(PHOTO_ALT_REGEX);
   // Strip memory tags and photo context markers from display
   const stripped = text
     .replace(MEMORY_TAG_REGEX, "")
     .replace(PHOTO_CONTEXT_REGEX, "")
+    .replace(PHOTO_TAG_REGEX, "")
     .trim();
   if (!match) return { cleanText: stripped, photoPrompt: null };
-  const cleanText = stripped.replace(PHOTO_TAG_REGEX, "").trim();
   const photoPrompt = match[1].trim();
-  return { cleanText, photoPrompt };
+  return { cleanText: stripped, photoPrompt };
 }
 
 export default function ChatPage() {
