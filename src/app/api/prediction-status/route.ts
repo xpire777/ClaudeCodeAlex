@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
 
     if (run.status === "success") {
       // ComfyDeploy returns outputs as an array of node outputs
-      const imageUrl = run.outputs?.[0]?.images?.[0]?.url;
+      const imageUrl = run.outputs?.[0]?.data?.images?.[0]?.url;
       if (imageUrl) {
         return Response.json({
           status: "succeeded",

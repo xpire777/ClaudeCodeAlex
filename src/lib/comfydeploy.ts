@@ -36,6 +36,7 @@ export async function getComfyRunStatus(runId: string) {
   const res = await fetch(`${COMFY_DEPLOY_BASE_URL}/run/${runId}`, {
     headers: {
       "Content-Type": "application/json",
+      Accept: "application/json",
       Authorization: `Bearer ${COMFY_DEPLOY_API_KEY}`,
     },
   });
@@ -46,6 +47,6 @@ export async function getComfyRunStatus(runId: string) {
 
   return res.json() as Promise<{
     status: string;
-    outputs?: Array<{ images?: Array<{ url: string }> }>;
+    outputs?: Array<{ data?: { images?: Array<{ url: string }> } }>;
   }>;
 }
