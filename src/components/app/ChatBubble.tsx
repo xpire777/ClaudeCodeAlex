@@ -98,7 +98,7 @@ export default function ChatBubble({
       {imageUrl && (
         <>
           <button
-            className={`max-w-[50%] overflow-hidden rounded-2xl ${
+            className={`max-w-[240px] overflow-hidden rounded-2xl ${
               isUser ? "rounded-br-md" : "rounded-bl-md"
             }`}
             onClick={() => setLightbox(true)}
@@ -107,7 +107,7 @@ export default function ChatBubble({
             <img
               src={imageUrl}
               alt="Photo"
-              className="block min-h-[100px] w-full object-cover"
+              className="block max-h-[320px] w-full object-cover"
               loading="eager"
             />
           </button>
