@@ -412,7 +412,9 @@ export default function ChatPage() {
         await cancelableDelay(typingDelay, controller.signal);
 
         const rawContent = fullText.replace(/\n+/g, " ").trim();
+        console.log("[chat] Raw AI response:", rawContent);
         const { cleanText, photoPrompt } = parsePhotoTag(rawContent);
+        console.log("[chat] Parsed — cleanText:", cleanText, "photoPrompt:", photoPrompt);
 
         const msgId = `assistant-${Date.now()}`;
         const assistantMsg: Message = {
