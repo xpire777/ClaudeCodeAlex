@@ -79,7 +79,7 @@ function MiniPersona({ persona, saved, onTap }: { persona: Persona; saved?: bool
   );
 }
 
-function PersonaLightbox({ persona, onClose }: { persona: Persona; onClose: () => void }) {
+function PersonaLightbox({ persona, onClose, savedSlugs, setSavedSlugs }: { persona: Persona; onClose: () => void; savedSlugs: string[]; setSavedSlugs: (slugs: string[]) => void }) {
   const router = useRouter();
   return (
     <div
@@ -131,6 +131,21 @@ function PersonaLightbox({ persona, onClose }: { persona: Persona; onClose: () =
               className="rounded-full border border-taupe/20 px-5 py-2 text-xs font-bold tracking-wider text-taupe transition-colors hover:text-cream"
             >
               Full Profile
+            </button>
+            <button
+              onClick={() => {
+                const saved = JSON.parse(localStorage.getItem("savedPersonas") || "[]");
+                const isSaved = saved.includes(persona.slug);
+                const updated = isSaved
+                  ? saved.filter((s: string) => s !== persona.slug)
+                  : [...saved, persona.slug];
+                localStorage.setItem("savedPersonas", JSON.stringify(updated));
+                setSavedSlugs(updated);
+              }}
+              className="rounded-full border border-taupe/20 px-5 py-2 text-xs font-bold tracking-wider transition-colors hover:text-cream"
+              style={{ color: savedSlugs.includes(persona.slug) ? "var(--color-burgundy)" : "var(--color-taupe)" }}
+            >
+              {savedSlugs.includes(persona.slug) ? "★ Saved" : "☆ Save"}
             </button>
           </div>
         </div>
@@ -429,7 +444,7 @@ export default function OverviewPage() {
       </div>
 
       {lightboxPersona && (
-        <PersonaLightbox persona={lightboxPersona} onClose={() => setLightboxPersona(null)} />
+        <PersonaLightbox persona={lightboxPersona} onClose={() => setLightboxPersona(null)} savedSlugs={savedSlugs} setSavedSlugs={setSavedSlugs} />
       )}
     </div>
   );
