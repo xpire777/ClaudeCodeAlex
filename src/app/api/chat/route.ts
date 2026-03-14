@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
     // Get the most recent messages for context (fetch descending, then reverse to chronological)
     const { data: historyDesc } = await supabase
       .from("messages")
-      .select("role, content")
+      .select("role, content, image_url")
       .eq("conversation_id", conversation.id)
       .order("created_at", { ascending: false })
       .limit(MAX_CONTEXT_MESSAGES);
@@ -108,8 +108,10 @@ export async function POST(request: NextRequest) {
     // Filter out empty messages from history (corrupted data)
     const validHistory = history.filter((msg) => msg.content && msg.content.trim().length > 0);
 
-    const rawMessages: ApiMessage[] = validHistory.map((msg) => {
+    const rawMessages: ApiMessage[] = [];
+    for (const msg of validHistory) {
       const role = msg.role as "user" | "assistant";
+      // User-sent images via [IMAGE: url] tag
       const imageMatch = msg.content.match(/\[IMAGE:\s*(https?:\/\/[^\]]+)\]/);
       if (imageMatch && role === "user") {
         const url = imageMatch[1];
@@ -122,10 +124,22 @@ export async function POST(request: NextRequest) {
         } else {
           content.push({ type: "text", text: "The user sent you a photo." });
         }
-        return { role, content };
+        rawMessages.push({ role, content });
+        continue;
       }
-      return { role, content: msg.content };
-    });
+      // Assistant message
+      rawMessages.push({ role, content: msg.content });
+      // If the assistant sent a photo, inject it as a user context message so the persona can see it
+      if (role === "assistant" && msg.image_url && msg.image_url.startsWith("http")) {
+        rawMessages.push({
+          role: "user",
+          content: [
+            { type: "text", text: "[System: this is the photo you just sent — you can see it to reference in future messages. Do not describe it back unless asked.]" },
+            { type: "image", source: { type: "url", url: msg.image_url } },
+          ],
+        });
+      }
+    }
 
     // Merge consecutive same-role messages (text-only)
     const messages: ApiMessage[] = [];
