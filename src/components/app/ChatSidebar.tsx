@@ -13,12 +13,12 @@ export default function ChatSidebar({ persona }: { persona: Persona }) {
     <div className="hidden w-64 shrink-0 bg-dark/40 lg:block">
       <div className="flex flex-col items-center px-6 py-8">
         <button onClick={() => setShowFullImage(true)} className="cursor-pointer">
-          <PersonaAvatar src={persona.image} name={persona.name} size={96} />
+          <PersonaAvatar src={persona.image} name={persona.name} size={96} online={false} />
         </button>
         <h3 className="mt-4 text-base font-bold tracking-wide text-cream">
           {persona.name}
         </h3>
-        <p className="mt-0.5 text-xs text-taupe/40">
+        <p className="mt-1.5 text-xs text-taupe/40">
           {persona.age} &middot; {persona.city}
         </p>
 
