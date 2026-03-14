@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -149,6 +149,7 @@ export default function OverviewPage() {
   const [chattedSlugs, setChattedSlugs] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [lightboxPersona, setLightboxPersona] = useState<Persona | null>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -219,21 +220,35 @@ export default function OverviewPage() {
     <div className="flex flex-1 flex-col p-4 md:p-6">
       {/* Bento Grid */}
       <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-3 md:grid-rows-[minmax(200px,1fr)_minmax(200px,1fr)_auto_auto] md:gap-5">
-        {/* Available Personas — spans 2 cols + 2 rows, infinite carousel */}
+        {/* Available Personas — spans 2 cols + 2 rows, scrollable carousel */}
         <BentoTile className="md:col-span-2 md:row-span-2 flex flex-col overflow-hidden relative min-h-[400px]">
           <SectionLabel>Available Personas</SectionLabel>
           <div className="relative min-h-0 flex-1">
-            {/* Left fade */}
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-surface-light to-transparent" />
-            {/* Right fade */}
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-surface-light to-transparent" />
-            <div className="scrollbar-hide absolute inset-0 overflow-x-auto">
-              <div className="flex h-full gap-3 px-5">
+            {/* Left arrow */}
+            <button
+              onClick={() => carouselRef.current?.scrollBy({ left: -240, behavior: "smooth" })}
+              className="absolute inset-y-0 left-0 z-20 flex w-10 items-center justify-center bg-gradient-to-r from-surface-light via-surface-light/80 to-transparent transition-opacity hover:opacity-100 opacity-70"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cream">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            {/* Right arrow */}
+            <button
+              onClick={() => carouselRef.current?.scrollBy({ left: 240, behavior: "smooth" })}
+              className="absolute inset-y-0 right-0 z-20 flex w-10 items-center justify-center bg-gradient-to-l from-surface-light via-surface-light/80 to-transparent transition-opacity hover:opacity-100 opacity-70"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cream">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+            <div ref={carouselRef} className="scrollbar-hide absolute inset-0 overflow-x-auto scroll-smooth">
+              <div className="flex h-full gap-3 px-12">
                 {personas.map((persona) => (
                   <button
                     key={persona.slug}
                     onClick={() => setLightboxPersona(persona)}
-                    className="group relative h-full w-48 shrink-0 overflow-hidden rounded-xl ring-2 ring-taupe/10 transition-all hover:ring-burgundy/40"
+                    className="group relative h-full w-56 shrink-0 overflow-hidden rounded-xl ring-2 ring-taupe/10 transition-all hover:ring-burgundy/40"
                   >
                     <Image
                       src={persona.image}
