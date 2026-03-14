@@ -666,7 +666,7 @@ export default function ChatPage() {
             <div className="flex h-full flex-col items-center justify-center gap-2 px-8">
               <PersonaAvatar src={persona.image} name={persona.name} size={64} />
               <p className="mt-2 text-center text-sm font-bold">{persona.name}</p>
-              <p className="text-center text-xs text-taupe/60">{persona.tagline}</p>
+              <p className="text-center text-xs text-taupe/60">{persona.age} &middot; {persona.city}</p>
               <p className="mt-4 text-center text-xs text-taupe/40">
                 Say hi to start the conversation
               </p>

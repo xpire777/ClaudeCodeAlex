@@ -111,11 +111,7 @@ function PersonaLightbox({ persona, onClose }: { persona: Persona; onClose: () =
           <h3 className="text-xl font-bold tracking-wider text-cream">
             {persona.name}, {persona.age}
           </h3>
-          <p className="mt-0.5 text-xs font-bold uppercase tracking-widest text-burgundy">
-            {persona.tagline}
-          </p>
           <p className="mt-0.5 text-sm text-taupe/50">{persona.city}</p>
-          <p className="mt-2 text-center text-sm text-taupe/60">{persona.tagline}</p>
           <div className="mt-1 flex flex-wrap justify-center gap-1.5">
             {persona.vibeTags.map((tag) => (
               <span key={tag} className="rounded-full bg-dark/50 px-2.5 py-0.5 text-[10px] text-taupe/60">
@@ -412,11 +408,8 @@ export default function OverviewPage() {
               <p className="text-lg font-bold tracking-wide text-cream">
                 {featuredPersona.name}, {featuredPersona.age}
               </p>
-              <p className="mt-0.5 text-[10px] font-bold uppercase tracking-widest text-burgundy">
-                {featuredPersona.tagline}
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-taupe/50">
-                {featuredPersona.tagline}
+              <p className="mt-0.5 text-sm text-taupe/50">
+                {featuredPersona.city}
               </p>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {featuredPersona.vibeTags.map((tag) => (

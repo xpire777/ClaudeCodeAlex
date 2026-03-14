@@ -36,8 +36,8 @@ export default async function ProfilePage({
         {/* Bottom fade with text */}
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-surface via-surface/60 to-transparent p-5 pt-24">
           <h1 className="text-3xl font-bold tracking-wider">{persona.name}</h1>
-          <p className="text-xs font-bold uppercase tracking-widest text-burgundy">
-            {persona.tagline}
+          <p className="text-xs text-taupe/50">
+            {persona.age} &middot; {persona.city}
           </p>
         </div>
       </div>

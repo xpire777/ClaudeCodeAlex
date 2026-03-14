@@ -10,13 +10,8 @@ export default function ChatSidebar({ persona }: { persona: Persona }) {
         <h3 className="mt-4 text-base font-bold tracking-wide text-cream">
           {persona.name}
         </h3>
-        <p className="mt-1 text-xs text-taupe/50">{persona.tagline}</p>
         <p className="mt-0.5 text-xs text-taupe/40">
           {persona.age} &middot; {persona.city}
-        </p>
-
-        <p className="mt-4 text-center text-xs leading-relaxed text-taupe/50">
-          {persona.tagline}
         </p>
 
         <div className="mt-5 flex flex-wrap justify-center gap-1.5">

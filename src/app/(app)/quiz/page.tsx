@@ -116,10 +116,7 @@ export default function QuizPage() {
           {result.name}, {result.age}
         </h2>
         <p className="mt-1 text-xs font-bold uppercase tracking-widest text-burgundy">
-          {result.tagline}
-        </p>
-        <p className="mt-2 max-w-sm text-center text-sm text-taupe/60">
-          {result.tagline}
+          {result.city}
         </p>
         <div className="mt-6 flex gap-3">
           <button

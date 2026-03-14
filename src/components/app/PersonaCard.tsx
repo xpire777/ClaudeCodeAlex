@@ -36,7 +36,6 @@ export default function PersonaCard({ persona }: { persona: Persona }) {
       <div className="text-center">
         <p className="text-lg font-bold text-cream">{persona.name}, {persona.age}</p>
         <p className="mt-0.5 text-sm text-taupe/50">{persona.city}</p>
-        <p className="mt-1 text-sm text-taupe/60">{persona.tagline}</p>
       </div>
     </Link>
   );
