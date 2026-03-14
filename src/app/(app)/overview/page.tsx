@@ -205,7 +205,7 @@ export default function OverviewPage() {
   const suggestedFinal =
     suggestedPersonas.length > 0 ? suggestedPersonas.slice(0, 3) : personas.slice(0, 3);
 
-  const featuredPersona = getPersonaBySlug("sienna")!;
+  const featuredPersona = getPersonaBySlug("valentina") || personas[0];
 
   if (loading) {
     return (
