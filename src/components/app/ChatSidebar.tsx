@@ -10,7 +10,7 @@ export default function ChatSidebar({ persona }: { persona: Persona }) {
         <h3 className="mt-4 text-base font-bold tracking-wide text-cream">
           {persona.name}
         </h3>
-        <p className="mt-1 text-xs text-taupe/50">{persona.archetype}</p>
+        <p className="mt-1 text-xs text-taupe/50">{persona.tagline}</p>
         <p className="mt-0.5 text-xs text-taupe/40">
           {persona.age} &middot; {persona.city}
         </p>

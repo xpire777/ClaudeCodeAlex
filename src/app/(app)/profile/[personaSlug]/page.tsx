@@ -37,7 +37,7 @@ export default async function ProfilePage({
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-surface via-surface/60 to-transparent p-5 pt-24">
           <h1 className="text-3xl font-bold tracking-wider">{persona.name}</h1>
           <p className="text-xs font-bold uppercase tracking-widest text-burgundy">
-            {persona.archetype}
+            {persona.tagline}
           </p>
         </div>
       </div>

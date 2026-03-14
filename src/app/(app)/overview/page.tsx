@@ -112,7 +112,7 @@ function PersonaLightbox({ persona, onClose }: { persona: Persona; onClose: () =
             {persona.name}, {persona.age}
           </h3>
           <p className="mt-0.5 text-xs font-bold uppercase tracking-widest text-burgundy">
-            {persona.archetype}
+            {persona.tagline}
           </p>
           <p className="mt-0.5 text-sm text-taupe/50">{persona.city}</p>
           <p className="mt-2 text-center text-sm text-taupe/60">{persona.tagline}</p>
@@ -368,7 +368,7 @@ export default function OverviewPage() {
                 {featuredPersona.name}, {featuredPersona.age}
               </p>
               <p className="mt-0.5 text-[10px] font-bold uppercase tracking-widest text-burgundy">
-                {featuredPersona.archetype}
+                {featuredPersona.tagline}
               </p>
               <p className="mt-2 text-sm leading-relaxed text-taupe/50">
                 {featuredPersona.tagline}
