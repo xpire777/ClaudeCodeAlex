@@ -16,7 +16,7 @@ export const PERSONA_LORAS: Record<
   },
   hannah: {
     url: "https://v3b.fal.media/files/b/0a921b07/lP0C19dsScrSbZT2_Rnqr_pytorch_lora_weights.safetensors",
-    scale: 1.2,
+    scale: 1.0,
     triggerWord: "HANNAH",
   },
 };
@@ -28,7 +28,7 @@ export async function queueFalRun(personaSlug: string, prompt: string) {
     input: {
       prompt,
       image_size: { width: 896, height: 1152 },
-      num_inference_steps: 28,
+      num_inference_steps: 35,
       guidance_scale: 2.0,
       num_images: 1,
       output_format: "jpeg",
