@@ -14,6 +14,11 @@ export const PERSONA_LORAS: Record<
     scale: 1.0,
     triggerWord: "VALENTINA",
   },
+  hannah: {
+    url: "https://v3b.fal.media/files/b/0a921b07/lP0C19dsScrSbZT2_Rnqr_pytorch_lora_weights.safetensors",
+    scale: 1.0,
+    triggerWord: "HANNAH",
+  },
 };
 
 export async function queueFalRun(personaSlug: string, prompt: string) {
