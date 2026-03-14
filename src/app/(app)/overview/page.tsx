@@ -218,41 +218,43 @@ export default function OverviewPage() {
   return (
     <div className="flex flex-1 flex-col p-4 md:p-6">
       {/* Bento Grid */}
-      <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-3 md:grid-rows-[1fr_1fr_auto_auto] md:gap-5">
-        {/* Available Personas — spans 2 cols + 2 rows, horizontal carousel */}
-        <BentoTile className="md:col-span-2 md:row-span-2 flex flex-col overflow-hidden relative">
+      <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-3 md:grid-rows-[minmax(200px,1fr)_minmax(200px,1fr)_auto_auto] md:gap-5">
+        {/* Available Personas — spans 2 cols + 2 rows, infinite carousel */}
+        <BentoTile className="md:col-span-2 md:row-span-2 flex flex-col overflow-hidden relative min-h-[400px]">
           <SectionLabel>Available Personas</SectionLabel>
           <div className="relative min-h-0 flex-1">
             {/* Left fade */}
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-surface-light to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-surface-light to-transparent" />
             {/* Right fade */}
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-surface-light to-transparent" />
-            <div className="scrollbar-hide absolute inset-0 flex gap-3 overflow-x-auto px-5 py-1 snap-x snap-mandatory">
-              {personas.map((persona) => (
-                <button
-                  key={persona.slug}
-                  onClick={() => setLightboxPersona(persona)}
-                  className="group relative h-full w-40 shrink-0 snap-start overflow-hidden rounded-xl ring-2 ring-taupe/10 transition-all hover:ring-burgundy/40"
-                >
-                  <Image
-                    src={persona.image}
-                    alt={persona.name}
-                    fill
-                    className="object-cover object-[center_20%]"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-2.5 pb-3 pt-16">
-                    <p className="text-sm font-bold text-white drop-shadow-lg">{persona.name}, {persona.age}</p>
-                    <p className="text-[10px] text-white/70 drop-shadow">{persona.city}</p>
-                  </div>
-                  {savedSlugs.includes(persona.slug) && (
-                    <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-burgundy/90 shadow">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-cream">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                      </svg>
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-surface-light to-transparent" />
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="flex h-full gap-3 animate-carousel hover:[animation-play-state:paused]">
+                {[...personas, ...personas].map((persona, i) => (
+                  <button
+                    key={`${persona.slug}-${i}`}
+                    onClick={() => setLightboxPersona(persona)}
+                    className="group relative h-full w-40 shrink-0 overflow-hidden rounded-xl ring-2 ring-taupe/10 transition-all hover:ring-burgundy/40"
+                  >
+                    <Image
+                      src={persona.image}
+                      alt={persona.name}
+                      fill
+                      className="object-cover object-[center_20%]"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-2.5 pb-3 pt-16">
+                      <p className="text-sm font-bold text-white drop-shadow-lg">{persona.name}, {persona.age}</p>
+                      <p className="text-[10px] text-white/70 drop-shadow">{persona.city}</p>
                     </div>
-                  )}
-                </button>
-              ))}
+                    {savedSlugs.includes(persona.slug) && (
+                      <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-burgundy/90 shadow">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-cream">
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </BentoTile>
