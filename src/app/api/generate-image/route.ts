@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     }
 
     const triggerWord = lora.triggerWord;
-    const quality = "iphone front camera selfie, holding phone in one hand, arm length distance, slightly grainy, jpeg compression, no makeup or light makeup, visible pores and skin texture, flat lighting from phone screen, slight wide angle distortion, not a professional photo, candid, unedited, real person";
+    const quality = "raw photo taken on iphone 14, front camera selfie, holding phone in one hand, arm length distance, slightly out of focus, jpeg artifacts, low quality camera, no makeup or light makeup, visible pores and blemishes, uneven skin tone, flat harsh lighting from phone screen, slight wide angle lens distortion, messy background, not retouched, not professional photography, real amateur snapshot, shot on mobile phone";
     const imagePrompt = prompt
       ? `${triggerWord}, ${prompt}, ${quality}`
       : `${triggerWord}, casual selfie, ${quality}`;
