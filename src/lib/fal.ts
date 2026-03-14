@@ -16,7 +16,7 @@ export const PERSONA_LORAS: Record<
   },
   hannah: {
     url: "https://v3b.fal.media/files/b/0a921b07/lP0C19dsScrSbZT2_Rnqr_pytorch_lora_weights.safetensors",
-    scale: 0.8,
+    scale: 1.2,
     triggerWord: "HANNAH",
   },
 };
