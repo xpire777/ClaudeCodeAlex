@@ -227,19 +227,19 @@ export default function OverviewPage() {
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-surface-light to-transparent" />
             {/* Right fade */}
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-surface-light to-transparent" />
-            <div className="absolute inset-0 overflow-hidden">
-              <div className="flex h-full gap-3 animate-carousel hover:[animation-play-state:paused]">
-                {[...personas, ...personas].map((persona, i) => (
+            <div className="scrollbar-hide absolute inset-0 overflow-x-auto">
+              <div className="flex h-full gap-3 px-5">
+                {personas.map((persona) => (
                   <button
-                    key={`${persona.slug}-${i}`}
+                    key={persona.slug}
                     onClick={() => setLightboxPersona(persona)}
-                    className="group relative h-full w-40 shrink-0 overflow-hidden rounded-xl ring-2 ring-taupe/10 transition-all hover:ring-burgundy/40"
+                    className="group relative h-full w-48 shrink-0 overflow-hidden rounded-xl ring-2 ring-taupe/10 transition-all hover:ring-burgundy/40"
                   >
                     <Image
                       src={persona.image}
                       alt={persona.name}
                       fill
-                      className="object-cover object-[center_20%]"
+                      className="object-cover object-center"
                     />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-2.5 pb-3 pt-16">
                       <p className="text-sm font-bold text-white drop-shadow-lg">{persona.name}, {persona.age}</p>
