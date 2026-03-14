@@ -219,12 +219,34 @@ export default function OverviewPage() {
     <div className="flex flex-1 flex-col p-4 md:p-6">
       {/* Bento Grid */}
       <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-3 md:grid-rows-[1fr_1fr_auto_auto] md:gap-5">
-        {/* New Personas — spans 2 cols + 2 rows, vertical scroll */}
+        {/* Available Personas — spans 2 cols + 2 rows, horizontal carousel */}
         <BentoTile className="md:col-span-2 md:row-span-2 flex flex-col overflow-hidden">
-          <SectionLabel>New Personas</SectionLabel>
-          <div className="scrollbar-hide -mx-1 flex min-h-0 flex-1 gap-5 overflow-x-auto px-1 py-1 md:flex-wrap md:content-start md:overflow-y-auto md:overflow-x-hidden md:-mr-2 md:pr-2">
+          <SectionLabel>Available Personas</SectionLabel>
+          <div className="scrollbar-hide -mx-5 flex min-h-0 flex-1 gap-3 overflow-x-auto px-5 py-1 snap-x snap-mandatory">
             {personas.map((persona) => (
-              <MiniPersona key={persona.slug} persona={persona} saved={savedSlugs.includes(persona.slug)} onTap={setLightboxPersona} />
+              <button
+                key={persona.slug}
+                onClick={() => setLightboxPersona(persona)}
+                className="group relative h-full w-40 shrink-0 snap-start overflow-hidden rounded-xl ring-2 ring-taupe/10 transition-all hover:ring-burgundy/40"
+              >
+                <Image
+                  src={persona.image}
+                  alt={persona.name}
+                  fill
+                  className="object-cover object-[center_20%]"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-2.5 pb-3 pt-16">
+                  <p className="text-sm font-bold text-white drop-shadow-lg">{persona.name}, {persona.age}</p>
+                  <p className="text-[10px] text-white/70 drop-shadow">{persona.city}</p>
+                </div>
+                {savedSlugs.includes(persona.slug) && (
+                  <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-burgundy/90 shadow">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-cream">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                  </div>
+                )}
+              </button>
             ))}
           </div>
         </BentoTile>
