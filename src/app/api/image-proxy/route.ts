@@ -12,6 +12,8 @@ export async function GET(request: NextRequest) {
     "replicate.delivery",
     "pbxt.replicate.delivery",
     "comfy-deploy-output.s3",
+    "fal.media",
+    "v3.fal.media",
   ];
   if (!allowedHosts.some((host) => url.includes(host))) {
     return new Response("Invalid image URL", { status: 403 });

@@ -1,11 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
-import {
-  PERSONA_DEPLOYMENTS,
-  PERSONA_TRIGGER_WORDS,
-  queueComfyRun,
-} from "@/lib/comfydeploy";
+import { PERSONA_LORAS, queueFalRun } from "@/lib/fal";
 
 async function getSupabase() {
   const cookieStore = await cookies();
@@ -51,37 +47,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const deploymentId = PERSONA_DEPLOYMENTS[personaSlug];
-    if (!deploymentId) {
-      console.log("[generate-image] No deployment for persona:", personaSlug);
+    const lora = PERSONA_LORAS[personaSlug];
+    if (!lora) {
+      console.log("[generate-image] No LoRA config for persona:", personaSlug);
       return Response.json(
         { error: "No image model available for this persona" },
         { status: 404 }
       );
     }
 
-    const triggerWord = PERSONA_TRIGGER_WORDS[personaSlug] || personaSlug.toUpperCase();
-    const quality = "raw iphone photo, amateur, imperfect skin with pores and freckles, slight film grain, warm indoor lighting, casual snapshot, not a professional photo, unretouched, real life";
-    const imagePrompt = prompt
-      ? `a photo of ${triggerWord}, ${prompt}, ${quality}`
-      : `a casual selfie photo of ${triggerWord}, natural daylight, ${quality}`;
-
-    if (!process.env.COMFY_DEPLOY_API_KEY) {
-      console.error("[generate-image] COMFY_DEPLOY_API_KEY is not set!");
+    if (!process.env.FAL_KEY) {
+      console.error("[generate-image] FAL_KEY is not set!");
       return Response.json(
         { error: "Server misconfiguration: missing API key" },
         { status: 500 }
       );
     }
 
-    console.log("[generate-image] Queuing ComfyDeploy run for:", personaSlug);
+    const triggerWord = lora.triggerWord;
+    const quality = "iphone front camera selfie, slightly grainy, jpeg compression, no makeup or light makeup, visible pores and skin texture, flat lighting from phone screen, arm length distance, slight wide angle distortion, not a professional photo, candid, unedited, real person";
+    const imagePrompt = prompt
+      ? `${triggerWord}, ${prompt}, ${quality}`
+      : `${triggerWord}, casual selfie, ${quality}`;
+
+    console.log("[generate-image] Queuing fal.ai run for:", personaSlug);
     console.log("[generate-image] Prompt:", imagePrompt);
 
-    const { run_id } = await queueComfyRun(deploymentId, imagePrompt);
+    const { requestId } = await queueFalRun(personaSlug, imagePrompt);
 
-    console.log("[generate-image] Run queued:", run_id);
+    console.log("[generate-image] Run queued:", requestId);
 
-    return Response.json({ predictionId: run_id });
+    return Response.json({ predictionId: requestId });
   } catch (err) {
     console.error("[generate-image] Error:", err instanceof Error ? err.message : err);
     console.error("[generate-image] Stack:", err instanceof Error ? err.stack : "no stack");

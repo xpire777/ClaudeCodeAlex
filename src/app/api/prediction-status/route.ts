@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
-import { getComfyRunStatus } from "@/lib/comfydeploy";
+import { getFalRunStatus } from "@/lib/fal";
 
 async function getSupabase() {
   const cookieStore = await cookies();
@@ -38,36 +38,23 @@ export async function GET(request: NextRequest) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const runId = request.nextUrl.searchParams.get("id");
-    if (!runId) {
-      return Response.json({ error: "Missing run ID" }, { status: 400 });
+    const requestId = request.nextUrl.searchParams.get("id");
+    if (!requestId) {
+      return Response.json({ error: "Missing request ID" }, { status: 400 });
     }
 
-    const run = await getComfyRunStatus(runId);
+    const result = await getFalRunStatus(requestId);
 
-    if (run.status === "success") {
-      // ComfyDeploy returns outputs as an array of node outputs
-      console.log("[prediction-status] Raw outputs:", JSON.stringify(run.outputs, null, 2));
-      const imageUrl = run.outputs?.[0]?.data?.images?.[0]?.url;
-      console.log("[prediction-status] Image URL:", imageUrl);
-      if (imageUrl) {
-        return Response.json({
-          status: "succeeded",
-          imageUrl: `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`,
-        });
-      }
-      return Response.json({ status: "failed", error: "No output image" });
-    }
-
-    if (run.status === "failed" || run.status === "cancelled") {
+    if (result.status === "succeeded" && result.imageUrl) {
+      console.log("[prediction-status] Image URL:", result.imageUrl);
       return Response.json({
-        status: "failed",
-        error: "Generation failed",
+        status: "succeeded",
+        imageUrl: `/api/image-proxy?url=${encodeURIComponent(result.imageUrl)}`,
       });
     }
 
-    // Still processing (queued, running, etc.)
-    return Response.json({ status: run.status });
+    // Still processing
+    return Response.json({ status: "processing" });
   } catch (err) {
     console.error("[prediction-status] Error:", err);
     return Response.json(
