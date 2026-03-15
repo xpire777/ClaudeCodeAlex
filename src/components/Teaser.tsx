@@ -168,9 +168,11 @@ export default function Teaser() {
       if (personaListRef.current) {
         const cards = personaListRef.current.children;
         if (cards[current]) {
-          (cards[current] as HTMLElement).scrollIntoView({
+          const card = cards[current] as HTMLElement;
+          const container = personaListRef.current;
+          container.scrollTo({
+            top: card.offsetTop - container.offsetTop,
             behavior: "smooth",
-            block: "nearest",
           });
         }
       }
