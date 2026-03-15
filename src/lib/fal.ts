@@ -15,8 +15,8 @@ export const PERSONA_LORAS: Record<
     triggerWord: "VALENTINA",
   },
   hannah: {
-    url: "https://v3b.fal.media/files/b/0a923a49/f6IU1fABmqmrZNcj-SHQH_hannah_lora_replicate.safetensors",
-    scale: 1.0,
+    url: "https://v3b.fal.media/files/b/0a921b07/lP0C19dsScrSbZT2_Rnqr_pytorch_lora_weights.safetensors",
+    scale: 0.85,
     triggerWord: "HANNAH",
   },
 };
