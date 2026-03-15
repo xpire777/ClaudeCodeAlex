@@ -247,14 +247,23 @@ export default function Teaser() {
     }
   }, [visibleMessages, isTyping]);
 
-  // Phone slide-in transforms
+  // Detect mobile (no slide-in on small screens)
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // Phone slide-in transforms (disabled on mobile)
   const slideProgress = Math.min(1, Math.max(0, scrollProgress * 2.5));
   const ease = slideProgress * slideProgress * (3 - 2 * slideProgress);
-  const leftPhoneX = (1 - ease) * -400;
-  const middlePhoneY = (1 - ease) * 300;
-  const rightPhoneX = (1 - ease) * 400;
-  const phoneOpacity = Math.min(1, slideProgress * 2);
-  const phoneScale = 0.92 + ease * 0.08;
+  const leftPhoneX = isMobile ? 0 : (1 - ease) * -400;
+  const middlePhoneY = isMobile ? 0 : (1 - ease) * 300;
+  const rightPhoneX = isMobile ? 0 : (1 - ease) * 400;
+  const phoneOpacity = isMobile ? 1 : Math.min(1, slideProgress * 2);
+  const phoneScale = isMobile ? 1 : 0.92 + ease * 0.08;
 
   const hannah = browsePersonas[hannahIndex];
 

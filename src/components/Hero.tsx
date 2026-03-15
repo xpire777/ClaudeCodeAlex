@@ -134,25 +134,25 @@ export default function Hero() {
           >
             <div className={item.float}>
             {item.type === "chat" ? (
-              <div className="rounded-2xl rounded-bl-md bg-white/60 px-5 py-3 shadow-sm backdrop-blur-sm">
-                <p className="whitespace-nowrap text-base text-dark/60">
+              <div className="rounded-2xl rounded-bl-md bg-white/60 px-4 py-2.5 shadow-sm backdrop-blur-sm">
+                <p className="whitespace-nowrap text-sm text-dark/60">
                   {item.text}
                 </p>
               </div>
             ) : (
-              <div className="flex items-center gap-2.5 rounded-2xl rounded-bl-md bg-white/60 px-4 py-2.5 shadow-sm backdrop-blur-sm">
-                <div className="relative h-12 w-12 overflow-hidden rounded-lg">
+              <div className="flex items-center gap-2 rounded-2xl rounded-bl-md bg-white/60 px-3.5 py-2 shadow-sm backdrop-blur-sm">
+                <div className="relative h-10 w-10 overflow-hidden rounded-lg">
                   <Image
                     src={item.image!}
                     alt="AI companion persona photo"
-                    width={48}
-                    height={48}
+                    width={40}
+                    height={40}
                     className="h-full w-full object-cover"
                   />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-dark/50">{item.persona} sent a photo</p>
-                  <p className="text-[11px] text-taupe">just now</p>
+                  <p className="text-[11px] font-bold text-dark/50">{item.persona} sent a photo</p>
+                  <p className="text-[10px] text-taupe">just now</p>
                 </div>
               </div>
             )}
