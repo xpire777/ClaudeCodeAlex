@@ -29,7 +29,7 @@ export async function queueFalRun(personaSlug: string, prompt: string) {
       prompt,
       image_size: { width: 896, height: 1152 },
       num_inference_steps: 40,
-      guidance_scale: 2.0,
+      guidance_scale: 1.5,
       num_images: 1,
       output_format: "jpeg",
       enable_safety_checker: false,
