@@ -16,7 +16,7 @@ export const PERSONA_LORAS: Record<
   },
   hannah: {
     url: "https://v3b.fal.media/files/b/0a923a49/f6IU1fABmqmrZNcj-SHQH_hannah_lora_replicate.safetensors",
-    scale: 1.0,
+    scale: 0.75,
     triggerWord: "HANNAH",
   },
 };
@@ -28,7 +28,7 @@ export async function queueFalRun(personaSlug: string, prompt: string) {
     input: {
       prompt,
       image_size: { width: 896, height: 1152 },
-      num_inference_steps: 35,
+      num_inference_steps: 40,
       guidance_scale: 2.0,
       num_images: 1,
       output_format: "jpeg",
