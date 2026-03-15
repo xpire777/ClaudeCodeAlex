@@ -165,7 +165,7 @@ export default function Teaser() {
     const highlightNext = () => {
       setHighlightedPersona(current);
 
-      if (personaListRef.current) {
+      if (personaListRef.current && window.innerWidth >= 1024) {
         const cards = personaListRef.current.children;
         if (cards[current]) {
           const card = cards[current] as HTMLElement;
@@ -239,16 +239,6 @@ export default function Teaser() {
     };
   }, [discoverDone, showNextMessage]);
 
-  // Auto-scroll messages
-  useEffect(() => {
-    if (messagesRef.current) {
-      messagesRef.current.scrollTo({
-        top: messagesRef.current.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-  }, [visibleMessages, isTyping]);
-
   // Detect mobile (no slide-in on small screens)
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -257,6 +247,17 @@ export default function Teaser() {
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
+
+  // Auto-scroll messages (skip on mobile to prevent page scroll)
+  useEffect(() => {
+    if (isMobile) return;
+    if (messagesRef.current) {
+      messagesRef.current.scrollTo({
+        top: messagesRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [visibleMessages, isTyping, isMobile]);
 
   // Phone slide-in transforms (disabled on mobile)
   const slideProgress = Math.min(1, Math.max(0, scrollProgress * 2.5));
