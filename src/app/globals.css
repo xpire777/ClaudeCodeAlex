@@ -86,6 +86,23 @@ body {
   animation: carousel-scroll 30s linear infinite;
 }
 
+.animate-carousel-scroll {
+  animation: carousel-scroll 40s linear infinite;
+}
+
+@keyframes carousel-scroll-reverse {
+  0% {
+    transform: translateX(-33.33%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-carousel-scroll-reverse {
+  animation: carousel-scroll-reverse 40s linear infinite;
+}
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

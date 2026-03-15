@@ -7,7 +7,7 @@ const desktopItems = [
   {
     type: "chat",
     text: "just got back from the gym 💪",
-    position: "left-[14%] top-[18%]",
+    position: "left-[14%] top-[6%]",
     fadeDelay: "animate-delay-200",
     float: "animate-float-slow",
   },
@@ -15,21 +15,21 @@ const desktopItems = [
     type: "photo",
     persona: "Kai",
     image: "/logos/kai.png",
-    position: "right-[14%] top-[14%]",
+    position: "right-[14%] top-[4%]",
     fadeDelay: "animate-delay-300",
     float: "animate-float",
   },
   {
     type: "chat",
     text: "good morning 🤍",
-    position: "left-[16%] top-[45%]",
+    position: "left-[6%] top-[45%]",
     fadeDelay: "animate-delay-100",
     float: "animate-float",
   },
   {
     type: "chat",
     text: "you free tonight?",
-    position: "right-[16%] top-[42%]",
+    position: "right-[6%] top-[42%]",
     fadeDelay: "animate-delay-400",
     float: "animate-float-slower",
   },
@@ -37,14 +37,14 @@ const desktopItems = [
     type: "photo",
     persona: "Sienna",
     image: "/logos/sienna.png",
-    position: "left-[18%] bottom-[22%]",
+    position: "left-[14%] bottom-[6%]",
     fadeDelay: "animate-delay-300",
     float: "animate-float-slower",
   },
   {
     type: "chat",
     text: "thinking about you ✨",
-    position: "right-[14%] bottom-[25%]",
+    position: "right-[14%] bottom-[4%]",
     fadeDelay: "animate-delay-200",
     float: "animate-float-slow",
   },
@@ -123,8 +123,45 @@ export default function Hero() {
     }
   }
 
+  const carouselPersonas = [
+    "/logos/valentina.png",
+    "/logos/hannah.png",
+    "/logos/nadia.png",
+    "/logos/maren.png",
+    "/logos/kelly.png",
+    "/logos/lisa.png",
+    "/logos/monica.png",
+    "/logos/emma.png",
+    "/logos/alex.png",
+    "/logos/alice.png",
+  ];
+
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-24">
+      {/* Scrolling persona photo carousel — desktop */}
+      <div className="pointer-events-none absolute inset-0 hidden lg:flex flex-col justify-center gap-6 opacity-0 animate-fade-in-up animate-delay-200">
+        {/* Top row — scrolls left */}
+        <div className="absolute top-[22%] w-full overflow-hidden">
+          <div className="flex gap-5 animate-carousel-scroll" style={{ width: "max-content" }}>
+            {[...carouselPersonas, ...carouselPersonas, ...carouselPersonas].map((img, i) => (
+              <div key={`top-${i}`} className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl opacity-[0.12] blur-[1px]">
+                <Image src={img} alt="" width={80} height={80} className="h-full w-full object-cover" />
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Bottom row — scrolls right */}
+        <div className="absolute bottom-[22%] w-full overflow-hidden">
+          <div className="flex gap-5 animate-carousel-scroll-reverse" style={{ width: "max-content" }}>
+            {[...carouselPersonas, ...carouselPersonas, ...carouselPersonas].map((img, i) => (
+              <div key={`bot-${i}`} className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl opacity-[0.12] blur-[1px]">
+                <Image src={img} alt="" width={80} height={80} className="h-full w-full object-cover" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Floating chat bubbles — mobile */}
       <div className="pointer-events-none absolute inset-0 lg:hidden">
         {mobileItems.map((item, i) => (
