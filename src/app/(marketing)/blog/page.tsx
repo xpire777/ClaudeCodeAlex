@@ -38,7 +38,7 @@ export default function BlogIndex() {
                 alt={post.title}
                 width={400}
                 height={200}
-                className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 ${post.imagePosition || "object-top"}`}
               />
             </div>
             <div className="flex flex-1 flex-col p-5">

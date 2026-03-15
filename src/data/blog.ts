@@ -5,6 +5,7 @@ export interface BlogPost {
   date: string;
   readTime: string;
   image: string;
+  imagePosition?: string;
   keywords: string[];
   content: string;
 }
@@ -87,7 +88,8 @@ Join the waitlist at cabn.io to be the first to experience it.
       "Looking for the best AI companion app? We compare the top platforms for AI chat, AI girlfriends, and virtual companions so you can find the right fit.",
     date: "2026-03-14",
     readTime: "8 min read",
-    image: "/logos/hannah.png",
+    image: "/logos/hannah_matcha.png",
+    imagePosition: "object-[center_30%]",
     keywords: [
       "best ai companion apps",
       "ai companion app",
@@ -180,7 +182,8 @@ Join the CABN waitlist at cabn.io to get early access.
       "Are AI companions replacing real relationships or enhancing them? We explore the psychology behind AI companionship and what it means for human connection.",
     date: "2026-03-13",
     readTime: "7 min read",
-    image: "/logos/maren.png",
+    image: "/logos/monica.png",
+    imagePosition: "object-[center_40%]",
     keywords: [
       "ai companion vs real relationship",
       "ai girlfriend",

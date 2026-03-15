@@ -135,8 +135,11 @@ export default async function BlogPost({ params }: Props) {
           alt={post.title}
           width={800}
           height={400}
-          className="h-full w-full object-cover object-top"
+          className={`h-full w-full object-cover ${post.imagePosition || "object-top"}`}
         />
+        <span className="absolute bottom-2 right-3 text-[10px] font-medium tracking-wider text-white/60">
+          cabn.io
+        </span>
       </div>
 
       <div className="prose-cabn">{renderContent(post.content)}</div>
