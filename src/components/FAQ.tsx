@@ -21,7 +21,7 @@ const faqs = [
   {
     question: "Is CABN free?",
     answer:
-      "CABN will offer a subscription plan that includes access to your chosen persona. Pricing details will be announced at launch. Join the waitlist to get early access and special offers.",
+      "CABN will offer multiple subscription tiers to fit how you want to connect. Plans range from text-only conversations to full experiences that include photo generation and more. Pricing details will be announced at launch — join the waitlist to get early access and exclusive offers.",
   },
   {
     question: "When does CABN launch?",

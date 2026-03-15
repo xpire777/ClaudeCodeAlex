@@ -92,9 +92,18 @@ export default function Teaser() {
       const progress = Math.min(1, Math.max(0, delayed));
       setScrollProgress(progress);
 
-      if (progress > 0.45 && !overviewStartedRef.current) {
-        overviewStartedRef.current = true;
-        setOverviewStarted(true);
+      if (window.innerWidth >= 1024) {
+        // Desktop: trigger when phones are settled
+        if (progress > 0.45 && !overviewStartedRef.current) {
+          overviewStartedRef.current = true;
+          setOverviewStarted(true);
+        }
+      } else {
+        // Mobile: trigger after heading/subtitle finish animating (~1s after entering view)
+        if (progress > 0.05 && !overviewStartedRef.current) {
+          overviewStartedRef.current = true;
+          setTimeout(() => setOverviewStarted(true), 1000);
+        }
       }
     };
 

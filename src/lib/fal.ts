@@ -16,7 +16,7 @@ export const PERSONA_LORAS: Record<
   },
   hannah: {
     url: "https://v3b.fal.media/files/b/0a923a49/f6IU1fABmqmrZNcj-SHQH_hannah_lora_replicate.safetensors",
-    scale: 0.75,
+    scale: 0.5,
     triggerWord: "HANNAH",
   },
 };
