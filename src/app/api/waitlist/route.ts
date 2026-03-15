@@ -49,16 +49,16 @@ export async function POST(request: NextRequest) {
               <h1 style="font-size: 32px; letter-spacing: 0.3em; text-align: center; margin-bottom: 24px;">CABN</h1>
               <p style="font-size: 16px; line-height: 1.7; color: #AC9C8D;">Hey there,</p>
               <p style="font-size: 16px; line-height: 1.7; color: #AC9C8D;">
-                Thanks for joining the CABN waitlist. You're in — we'll let you know as soon as we're ready for you.
+                Thanks for joining the CABN waitlist. You're in -we'll let you know as soon as we're ready for you.
               </p>
               <p style="font-size: 16px; line-height: 1.7; color: #AC9C8D;">
-                CABN is a new kind of connection. Curated personas that are always there when you need them — ready to chat, share their day, and build something real with you.
+                CABN is a new kind of connection. Curated personas that are always there when you need them -ready to chat, share their day, and build something real with you.
               </p>
               <p style="font-size: 16px; line-height: 1.7; color: #AC9C8D;">
                 We're putting the finishing touches on things. Sit tight.
               </p>
               <p style="font-size: 14px; color: #AC9C8D; margin-top: 32px; text-align: center; border-top: 1px solid #EFE9E1; padding-top: 20px;">
-                — The CABN Team
+                The CABN Team
               </p>
             </div>
           `,
