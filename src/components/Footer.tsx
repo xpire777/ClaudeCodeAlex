@@ -12,6 +12,9 @@ export default function Footer() {
       />
 
       <div className="flex gap-6 text-sm tracking-wide text-taupe">
+        <Link href="/blog" className="transition-colors hover:text-dark">
+          Blog
+        </Link>
         <Link href="/privacy" className="transition-colors hover:text-dark">
           Privacy Policy
         </Link>
