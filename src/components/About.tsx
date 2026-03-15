@@ -42,11 +42,11 @@ export default function About() {
   return (
     <section
       ref={sectionRef}
-      className="flex flex-col items-center bg-dark px-6 py-24"
+      className="flex flex-col items-center bg-dark px-6 py-32"
     >
-      <div className="max-w-3xl text-center">
+      <div className="max-w-4xl text-center">
         <h2
-          className={`mb-4 text-2xl font-bold tracking-[0.12em] text-cream transition-all duration-700 sm:text-3xl ${
+          className={`mb-6 text-3xl font-bold tracking-[0.12em] text-cream transition-all duration-700 sm:text-4xl ${
             visible
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-6"
@@ -55,7 +55,7 @@ export default function About() {
           What is CABN?
         </h2>
         <p
-          className={`mb-14 text-lg leading-relaxed text-taupe transition-all duration-700 delay-100 ${
+          className={`mb-16 text-xl leading-relaxed text-taupe transition-all duration-700 delay-100 ${
             visible
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-6"
@@ -77,10 +77,10 @@ export default function About() {
               }`}
               style={{ transitionDelay: `${200 + i * 100}ms` }}
             >
-              <h3 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-burgundy">
+              <h3 className="mb-3 text-base font-bold uppercase tracking-[0.2em] text-burgundy">
                 {v.title}
               </h3>
-              <p className="max-w-[220px] text-sm leading-relaxed text-taupe">
+              <p className="max-w-[260px] text-base leading-relaxed text-taupe">
                 {v.description}
               </p>
             </div>

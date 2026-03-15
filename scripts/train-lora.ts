@@ -6,7 +6,8 @@
  */
 
 import Replicate from "replicate";
-import { createReadStream, createWriteStream } from "fs";
+import { fal } from "@fal-ai/client";
+import { createReadStream, createWriteStream, readFileSync } from "fs";
 import { readdir, stat } from "fs/promises";
 import path from "path";
 import { createGzip } from "zlib";
@@ -99,6 +100,14 @@ async function main() {
     }
   }
 
+  // Upload the tar.gz to fal.ai storage (no size limit) to get a public URL
+  console.log("Uploading training images to fal.ai storage...");
+  fal.config({ credentials: process.env.FAL_KEY });
+  const tarBuffer = readFileSync(tarPath);
+  const tarFile = new File([tarBuffer], `${personaSlug}-training.tar.gz`, { type: "application/gzip" });
+  const uploadedUrl = await fal.storage.upload(tarFile);
+  console.log(`  Uploaded: ${uploadedUrl}`);
+
   // Start training using Flux LoRA trainer
   console.log("Starting LoRA training...");
 
@@ -109,7 +118,7 @@ async function main() {
     {
       destination: `${REPLICATE_OWNER}/${modelName}`,
       input: {
-        input_images: createReadStream(tarPath),
+        input_images: uploadedUrl,
         trigger_word: personaSlug.toUpperCase(),
         steps: 1000,
         learning_rate: 0.0004,
