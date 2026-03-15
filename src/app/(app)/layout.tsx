@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "CABN",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function AppLayout({

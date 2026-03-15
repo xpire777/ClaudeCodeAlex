@@ -18,6 +18,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "replicate": "^1.4.0",
+    "resend": "^6.9.3",
     "tar-stream": "^3.1.8"
   },
   "devDependencies": {
