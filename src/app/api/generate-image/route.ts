@@ -66,9 +66,10 @@ export async function POST(request: NextRequest) {
 
     const triggerWord = lora.triggerWord;
     const quality = "candid iphone photo, grainy, slight motion blur, jpeg compression, visible skin texture and pores, imperfect skin, no retouching, no airbrushing, natural uneven lighting, amateur photography, not a render, not 3d, not illustration, real photograph, single person, correct human anatomy, two arms, two legs";
+    const appearance = personaSlug === "hannah" ? "platinum blonde short bob hair, cat eye eyeliner, petite" : "";
     const imagePrompt = prompt
-      ? `a photo of ${triggerWord}, ${triggerWord} person, ${prompt}, ${quality}`
-      : `a photo of ${triggerWord}, ${triggerWord} person, casual selfie, ${quality}`;
+      ? `a photo of ${triggerWord}, ${triggerWord} person, ${appearance}, ${prompt}, ${quality}`
+      : `a photo of ${triggerWord}, ${triggerWord} person, ${appearance}, casual selfie, ${quality}`;
 
     console.log("[generate-image] Queuing fal.ai run for:", personaSlug);
     console.log("[generate-image] Prompt:", imagePrompt);
